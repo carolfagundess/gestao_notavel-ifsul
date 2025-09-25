@@ -16,6 +16,9 @@ public class Paciente implements Serializable {
     @Column(nullable = false, length = 100)
     private String nome;
 
+    @Column(nullable = false, length = 11, unique = true)
+    private String cpf;
+
     @Column(nullable = false)
     private Date dataNascimento;
 
@@ -59,6 +62,14 @@ public class Paciente implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public Date getDataNascimento() {

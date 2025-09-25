@@ -6,6 +6,7 @@ import br.com.gestaonotavel.gestao_notavel.ifsul.util.JpaUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import java.util.List;
 
 /**
@@ -42,7 +43,8 @@ public class UsuarioDAO {
     public List<Usuario> listarTodos() {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
+            return em.createQuery("SELECT u FROM Usuario u", Usuario.class)
+                    .getResultList();
         } finally {
             em.close();
         }
@@ -59,6 +61,33 @@ public class UsuarioDAO {
             tx.rollback();
             throw ex;
         } finally {
+            em.close();
+        }
+    }
+
+    public Usuario buscarPorCpf(String cpfBuscado) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            return em.createQuery(
+                            "SELECT u FROM Usuario u WHERE u.cpf = :cpf", Usuario.class)
+                    .setParameter("cpf", cpfBuscado)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null; //deixar para o service tratar
+        } finally {
+            em.close();
+        }
+    }
+
+    public Usuario buscarPorEmail(String emailBuscado) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT u FROM Usuario u WHERE u.email = :email", Usuario.class)
+                    .setParameter("email", emailBuscado)
+                    .getSingleResult();
+        }catch (NoResultException e) {
+            return null; //deixar para o service tratar
+        }finally {
             em.close();
         }
     }
