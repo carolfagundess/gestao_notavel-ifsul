@@ -9,17 +9,24 @@ public class PacienteService {
     PacienteDAO pacienteDAO = new PacienteDAO();
 
     public Paciente salvarPaciente(Paciente pacienteSalvando) {
+
         if (pacienteSalvando.getNome() == null || pacienteSalvando.getNome().isEmpty()) {
             throw new IllegalArgumentException("Preencha o nome do Paciente");
-        } else if (pacienteSalvando.getCpf() == null || pacienteSalvando.getCpf().isEmpty()) {
-            throw new IllegalArgumentException("Preencha o CPF do Paciente");
         } else if (pacienteSalvando.getDataNascimento() == null) {
             throw new IllegalArgumentException("Preencha a data de nascimento do usuário");
+        } else if(pacienteSalvando.getDiagnostico() == null || pacienteSalvando.getDiagnostico().isEmpty()) {
+            throw new IllegalArgumentException("Preencha um diagnóstico para o paciente");
+        } else if(pacienteSalvando.getEscolaridade() == null || pacienteSalvando.getEscolaridade().isEmpty()) {
+            throw new IllegalArgumentException("Preencha o escolaridade para o paciente");
         }
 
-        if(pacienteDAO.buscarPorCpf(pacienteSalvando.getCpf()) != null) {
-            throw new IllegalArgumentException("Usuário com login já cadastrado no sistema");
+        //campos opcionais
+        if (pacienteSalvando.getCpf() != null && !pacienteSalvando.getCpf().isEmpty()) {
+            if (pacienteDAO.buscarPorCpf(pacienteSalvando.getCpf()) != null ){
+                throw new IllegalArgumentException("CPF já cadastrado para um Paciente");
+            }
         }
+
         return pacienteDAO.salvar(pacienteSalvando);
     }
 }

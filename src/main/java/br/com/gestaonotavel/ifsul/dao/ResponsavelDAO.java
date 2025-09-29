@@ -1,0 +1,50 @@
+package br.com.gestaonotavel.ifsul.dao;
+
+import br.com.gestaonotavel.ifsul.model.Responsavel;
+import br.com.gestaonotavel.ifsul.util.JpaUtil;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import java.util.List;
+
+public class ResponsavelDAO {
+
+    public Responsavel salvarResponsavel(Responsavel responsavelSalvando) {
+        EntityManager em = JpaUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        try {
+            Responsavel responsavel = em.merge(responsavelSalvando);
+            tx.commit();
+            return responsavel;
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+
+    public Responsavel buscarPorId(Long idResponsavel) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            return em.find(Responsavel.class, idResponsavel);
+
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<Responsavel> buscarTodos() {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+             return em.createQuery("SELECT r FROM Responsavel r", Responsavel.class).getResultList();
+        }catch (Exception e) {
+            throw e;
+        }finally {
+            em.close();
+        }
+    }
+}

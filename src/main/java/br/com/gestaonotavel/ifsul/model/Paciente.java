@@ -16,14 +16,14 @@ public class Paciente implements Serializable {
     @Column(nullable = false, length = 100)
     private String nome;
 
-    @Column(nullable = false, length = 11, unique = true)
+    @Column(length = 11, unique = true)
     private String cpf;
 
     @Column(nullable = false)
     private Date dataNascimento;
 
     @Column(nullable = false, length = 50)
-    private String escolaridade; // O diagrama sugere um Enum, mas por enquanto vamos usar String para simplificar
+    private String escolaridade; //
 
     //Substitui deficiencia
     @Column(length = 255)
