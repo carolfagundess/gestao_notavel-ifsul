@@ -47,4 +47,22 @@ public class ResponsavelDAO {
             em.close();
         }
     }
+
+    public void removerResponsavel(Long idResponsavel) {
+        EntityManager em = JpaUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        try {
+            Responsavel responsavel = em.find(Responsavel.class, idResponsavel);
+            if (responsavel != null) {
+                em.remove(responsavel);
+                tx.commit();
+            }
+        }catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }finally {
+            em.close();
+        }
+    }
 }
