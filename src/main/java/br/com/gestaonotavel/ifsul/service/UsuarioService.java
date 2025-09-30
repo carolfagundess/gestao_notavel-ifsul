@@ -1,12 +1,8 @@
-package br.com.gestaonotavel.gestao_notavel.ifsul.service;
+package br.com.gestaonotavel.ifsul.service;
 
-import br.com.gestaonotavel.gestao_notavel.ifsul.dao.UsuarioDAO;
-import br.com.gestaonotavel.gestao_notavel.ifsul.model.Usuario;
-import br.com.gestaonotavel.gestao_notavel.ifsul.util.JpaUtil;
+import br.com.gestaonotavel.ifsul.dao.UsuarioDAO;
+import br.com.gestaonotavel.ifsul.model.Usuario;
 import org.mindrot.jbcrypt.BCrypt;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 
 public class UsuarioService {
 

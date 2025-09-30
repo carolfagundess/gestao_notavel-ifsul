@@ -16,7 +16,7 @@ public class Paciente implements Serializable {
     @Column(nullable = false, length = 100)
     private String nome;
 
-    @Column(length = 11, unique = true)
+    @Column(length = 11)
     private String cpf;
 
     @Column(nullable = false)

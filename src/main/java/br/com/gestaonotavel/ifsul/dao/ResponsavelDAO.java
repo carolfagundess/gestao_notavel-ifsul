@@ -5,6 +5,7 @@ import br.com.gestaonotavel.ifsul.util.JpaUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.NoResultException;
 import java.util.List;
 
 public class ResponsavelDAO {
@@ -62,6 +63,19 @@ public class ResponsavelDAO {
             tx.rollback();
             throw e;
         }finally {
+            em.close();
+        }
+    }
+
+    public Responsavel buscarPorCpf(String cpfResponsavel) {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT r FROM Responsavel r WHERE r.cpf = :cpf", Responsavel.class)
+                    .setParameter("cpf", cpfResponsavel)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } finally {
             em.close();
         }
     }
