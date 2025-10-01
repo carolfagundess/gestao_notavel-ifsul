@@ -1,6 +1,7 @@
 package br.com.gestaonotavel.ifsul.service;
 
 import br.com.gestaonotavel.ifsul.dao.ResponsavelDAO;
+import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
 
 import java.util.Date;
@@ -9,7 +10,7 @@ public class ResponsavelService {
 
     ResponsavelDAO responsavelDAO = new ResponsavelDAO();
 
-    public Responsavel salvarResponsavel(Responsavel responsavelSalvando) {
+    public Responsavel salvar(Responsavel responsavelSalvando) {
 
         Date dataHoje = new Date();
 
@@ -31,5 +32,10 @@ public class ResponsavelService {
         }
 
         return responsavelDAO.salvarResponsavel(responsavelSalvando);
+    }
+
+    public Responsavel criarEAssociarPaciente(Responsavel responsavel, Paciente paciente) {
+        // A lógica viria aqui...
+        return null;
     }
 }
