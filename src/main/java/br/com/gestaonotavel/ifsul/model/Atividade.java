@@ -2,7 +2,6 @@ package br.com.gestaonotavel.ifsul.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,7 +13,9 @@ public class Atividade implements Serializable {
     private Integer idAtividade;
     @Column(nullable = false, length = 100)
     private String nome;
+    @Column(nullable = false)
     private LocalDateTime dataInicio;
+    @Column(nullable = false)
     private LocalDateTime dataFim;
     private String local;
     @Column(precision = 12, scale = 2)

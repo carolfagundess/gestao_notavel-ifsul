@@ -15,9 +15,9 @@ public class ResponsavelDAO {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
-            Responsavel responsavel = em.merge(responsavelSalvando);
+            Responsavel responsavelSalvo = em.merge(responsavelSalvando);
             tx.commit();
-            return responsavel;
+            return responsavelSalvo;
         } catch (Exception e) {
             tx.rollback();
             throw e;
