@@ -3,6 +3,7 @@ package br.com.gestaonotavel.ifsul.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -25,6 +26,9 @@ public class Responsavel implements Serializable {
     private Integer horasVoluntariado;
     @Column(name = "creditos")
     private Double creditos;
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "responsaveisLista")
+    private List<Paciente> pacientesLista;
 
     public Responsavel() {
     }

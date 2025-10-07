@@ -3,7 +3,7 @@ package br.com.gestaonotavel.ifsul.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Table(name = "paciente")
@@ -11,6 +11,7 @@ public class Paciente implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idPaciente")
     private Long id;
 
     @Column(nullable = false, length = 100)
@@ -35,6 +36,11 @@ public class Paciente implements Serializable {
 
     @Column(columnDefinition = "TEXT")
     private String observacoesGerais;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "vinculo_responsavel", joinColumns = @JoinColumn(name = "paciente_id"),
+    inverseJoinColumns = @JoinColumn(name = "responsavel_id"))
+    private List<Responsavel> responsaveisLista;
 
     public Paciente() {
     }
