@@ -17,7 +17,7 @@ public class PacienteService {
         if (pacienteSalvando.getNome() == null || pacienteSalvando.getNome().isEmpty()) {
             throw new IllegalArgumentException("Preencha o nome do Paciente");
         } else if (pacienteSalvando.getDataNascimento() == null) {
-            throw new IllegalArgumentException("Preencha a data de nascimento do usuário");
+            throw new IllegalArgumentException("Preencha a data de nascimento do paciente");
         } else if(pacienteSalvando.getDiagnostico() == null || pacienteSalvando.getDiagnostico().isEmpty()) {
             throw new IllegalArgumentException("Preencha um diagnóstico para o paciente");
         } else if(pacienteSalvando.getEscolaridade() == null || pacienteSalvando.getEscolaridade().isEmpty()) {
