@@ -12,7 +12,7 @@ public class Paciente implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idPaciente")
-    private Long id;
+    private Long idPaciente;
 
     @Column(nullable = false, length = 100)
     private String nome;
@@ -55,11 +55,11 @@ public class Paciente implements Serializable {
     }
 
     public Long getId() {
-        return id;
+        return idPaciente;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.idPaciente = id;
     }
 
     public String getNome() {
@@ -121,7 +121,7 @@ public class Paciente implements Serializable {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.id);
+        hash = 97 * hash + Objects.hashCode(this.idPaciente);
         return hash;
     }
 
@@ -137,6 +137,6 @@ public class Paciente implements Serializable {
             return false;
         }
         final Paciente other = (Paciente) obj;
-        return Objects.equals(this.id, other.id);
+        return Objects.equals(this.idPaciente, other.idPaciente);
     }
 }
