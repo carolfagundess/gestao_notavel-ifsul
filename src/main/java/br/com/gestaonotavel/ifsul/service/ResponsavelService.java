@@ -1,14 +1,17 @@
 package br.com.gestaonotavel.ifsul.service;
 
+import br.com.gestaonotavel.ifsul.dao.PacienteDAO;
 import br.com.gestaonotavel.ifsul.dao.ResponsavelDAO;
 import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
 
 import java.util.Date;
+import java.util.List;
 
 public class ResponsavelService {
 
     ResponsavelDAO responsavelDAO = new ResponsavelDAO();
+    PacienteDAO pacienteDAO = new PacienteDAO();
 
     public Responsavel salvar(Responsavel responsavelSalvando) {
 
@@ -32,10 +35,5 @@ public class ResponsavelService {
         }
 
         return responsavelDAO.salvarResponsavel(responsavelSalvando);
-    }
-
-    public Responsavel criarEAssociarPaciente(Responsavel responsavel, Paciente paciente) {
-        // A lógica viria aqui...
-        return null;
     }
 }

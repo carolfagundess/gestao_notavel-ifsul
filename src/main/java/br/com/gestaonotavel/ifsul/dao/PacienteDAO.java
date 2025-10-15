@@ -10,7 +10,7 @@ import java.util.List;
 
 public class PacienteDAO {
 
-    public Paciente salvar(Paciente paciente) {
+    public Paciente salvarPaciente(Paciente paciente) {
         EntityManager em = JpaUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();

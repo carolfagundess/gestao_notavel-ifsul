@@ -27,7 +27,8 @@ public class Responsavel implements Serializable {
     @Column(name = "creditos")
     private Double creditos;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "responsaveisLista")
+    @ManyToMany(fetch = FetchType.LAZY
+            , mappedBy = "responsaveisLista")
     private List<Paciente> pacientesLista;
 
     public Responsavel() {
@@ -99,6 +100,14 @@ public class Responsavel implements Serializable {
         this.creditos = creditos;
     }
 
+    public List<Paciente> getPacientesLista() {
+        return pacientesLista;
+    }
+
+    public void setPacientesLista(List<Paciente> pacientesLista) {
+        this.pacientesLista = pacientesLista;
+    }
+    
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;

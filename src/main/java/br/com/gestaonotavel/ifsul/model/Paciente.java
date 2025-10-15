@@ -37,8 +37,10 @@ public class Paciente implements Serializable {
     @Column(columnDefinition = "TEXT")
     private String observacoesGerais;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "vinculo_responsavel", joinColumns = @JoinColumn(name = "paciente_id"),
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "vinculo_responsavel",
+            joinColumns = @JoinColumn(name = "paciente_id"),
     inverseJoinColumns = @JoinColumn(name = "responsavel_id"))
     private List<Responsavel> responsaveisLista;
 
@@ -116,6 +118,27 @@ public class Paciente implements Serializable {
 
     public void setObservacoesGerais(String observacoesGerais) {
         this.observacoesGerais = observacoesGerais;
+    }
+
+    public Long getIdPaciente() {
+        return idPaciente;
+    }
+
+    public void setIdPaciente(Long idPaciente) {
+        this.idPaciente = idPaciente;
+    }
+
+    public List<Responsavel> getResponsaveisLista() {
+        return responsaveisLista;
+    }
+
+    public void setResponsaveisLista(List<Responsavel> responsaveisLista) {
+        this.responsaveisLista = responsaveisLista;
+    }
+
+    public void adicionarResponsavel(Responsavel responsavel){
+        this.responsaveisLista.add(responsavel);
+        responsavel.getPacientesLista().add(this);
     }
 
     @Override
