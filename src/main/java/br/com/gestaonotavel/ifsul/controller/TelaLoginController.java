@@ -4,13 +4,21 @@
  */
 package br.com.gestaonotavel.ifsul.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import br.com.gestaonotavel.ifsul.model.Usuario;
+import br.com.gestaonotavel.ifsul.service.UsuarioService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -36,9 +44,51 @@ public class TelaLoginController implements Initializable {
 
     @FXML
     private void handleEntrarButtonAction(ActionEvent event) {
-        String cpf  = cpfTextField.getText();
-        String senha = senhaPasswordField.getText();
 
-        System.out.println("CPF: " + cpf);
+        UsuarioService usuarioService = new UsuarioService();
+
+        try {
+            String cpf  = cpfTextField.getText();
+            String senha = senhaPasswordField.getText();
+
+            Usuario usuario = usuarioService.autenticarUsuario(cpf, senha);
+
+            System.out.println("Login bem-sucedido! Bem-vindo, " + usuario.getNome());
+            abrirTelaPrincipal();
+        }catch (IllegalArgumentException erro){
+            showAlert(Alert.AlertType.ERROR, "Erro de autenticação", erro.getMessage());
+        }
+    }
+
+    public void abrirTelaPrincipal(){
+        try {
+            // Carrega o FXML da nova tela
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TelaPrincipal.fxml"));
+            Parent root = loader.load();
+
+            // Cria um novo palco (Stage), que é uma nova janela
+            Stage stage = new Stage();
+            stage.setTitle("Gestão Notável - Painel Principal");
+            stage.setScene(new Scene(root));
+
+            // Mostra a nova janela
+            stage.show();
+
+            // Pega a referência da janela de login atual e a fecha
+            Stage loginStage = (Stage) cpfTextField.getScene().getWindow();
+            loginStage.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erro", "Falha ao abrir a tela principal.");
+        }
+    }
+
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="br.com.gestaonotavel.ifsul.controller.TelaLoginController">
+    <stylesheets>
+        <URL value="@/styles/telalogin.css" />
+    </stylesheets>
+   <children>
+      <Pane layoutX="74.0" layoutY="46.0" prefHeight="296.0" prefWidth="467.0">
+         <children>
+            <Label layoutX="111.0" layoutY="162.0" text="Senha" />
+            <Label layoutX="117.0" layoutY="90.0" text="CPF" />
+            <TextField fx:id="cpfTextField" layoutX="111.0" layoutY="116.0" prefHeight="25.0" prefWidth="251.0" />
+            <TextField fx:id="senhaPasswordField" layoutX="111.0" layoutY="188.0" prefHeight="25.0" prefWidth="251.0" />
+            <Button layoutX="114.0" layoutY="233.0" mnemonicParsing="false" onAction="#handleEntrarButtonAction" prefHeight="25.0" prefWidth="251.0" text="Entrar" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
