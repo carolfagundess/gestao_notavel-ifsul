@@ -9,17 +9,15 @@ public class UsuarioService {
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     public Usuario autenticarUsuario(String login, String senha) {
-        Usuario usuarioAutenticando = usuarioDAO.buscarPorCpf(login);
+        Usuario usuario = usuarioDAO.buscarPorCpf(login);
 
-        if (usuarioAutenticando == null) {
-            throw new IllegalArgumentException("Usuário com login " + login + " não encontrado");
+        // O login só é um sucesso se o usuário existir E a senha bater.
+        if (usuario != null && BCrypt.checkpw(senha, usuario.getSenha())) {
+            return usuario;
         }
 
-        if (BCrypt.checkpw(senha, usuarioAutenticando.getSenha())) {
-            return usuarioAutenticando;
-        } else {
-            throw new IllegalArgumentException("Senha invalida! Tente novamente. ");
-        }
+        // Se qualquer uma das condições falhar, o resultado é o mesmo.
+        throw new IllegalArgumentException("CPF ou senha inválidos.");
     }
 
     public Usuario salvarUsuario(Usuario usuarioSalvando) {
