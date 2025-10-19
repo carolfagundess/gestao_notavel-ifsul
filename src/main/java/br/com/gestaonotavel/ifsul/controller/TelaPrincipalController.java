@@ -1,12 +1,14 @@
 
 package br.com.gestaonotavel.ifsul.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.ZoneId;
 
 import br.com.gestaonotavel.ifsul.service.PacienteService;
+import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import javafx.beans.property.SimpleIntegerProperty;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -15,11 +17,17 @@ import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -54,7 +62,24 @@ public class TelaPrincipalController implements Initializable {
     private TableColumn<Paciente, String> colunaStatus;
 
     @FXML
-    private TableColumn<Paciente, Void> colunaAcoes; //
+    private TableColumn<Paciente, Void> colunaAcoes;
+
+
+    @FXML
+    public void handleNovoCadastroButtonAction(ActionEvent event) throws IOException {
+        try{
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaCadastroPaciente.fxml"));
+            Parent root = fxmlLoader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Cadastro de Pacientes");
+            stage.setScene(new Scene(root));
+            stage.showAndWait();
+        }catch (IOException ex){
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir a tela de cadastro");
+        }
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 

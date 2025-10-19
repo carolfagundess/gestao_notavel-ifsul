@@ -2,6 +2,7 @@ package br.com.gestaonotavel.ifsul.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -29,7 +30,7 @@ public class Responsavel implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY
             , mappedBy = "responsaveisLista")
-    private List<Paciente> pacientesLista;
+    private List<Paciente> pacientesLista =  new ArrayList<>();
 
     public Responsavel() {
     }

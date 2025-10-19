@@ -29,7 +29,6 @@ public class PacienteService {
     }
 
     public Paciente criarEAssociarResponsavel(Responsavel responsavel, Paciente paciente) {
-        List<Responsavel> responsaveis = new ArrayList<>();
         paciente.adicionarResponsavel(responsavel);
         return salvarPaciente(paciente);
     }

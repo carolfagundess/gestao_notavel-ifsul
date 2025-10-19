@@ -38,7 +38,7 @@ public class PacienteDAO {
     public List<Paciente> listarTodos() {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.createQuery("SELECT p FROM Paciente p", Paciente.class).getResultList();
+            return em.createQuery("SELECT DISTINCT p FROM Paciente p LEFT JOIN FETCH p.responsaveisLista", Paciente.class).getResultList();
         } catch (Exception ex) {
             throw ex;
         } finally {

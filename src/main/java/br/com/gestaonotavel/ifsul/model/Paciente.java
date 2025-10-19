@@ -31,7 +31,7 @@ public class Paciente implements Serializable {
     private String diagnostico;
 
     //Para fins de aprofundamento da condição
-    @Column(nullable = false, length = 100)
+    @Column(length = 100)
     private String condicaoClinica;
 
     @Column(columnDefinition = "TEXT")
@@ -42,7 +42,7 @@ public class Paciente implements Serializable {
     @JoinTable(name = "vinculo_responsavel",
             joinColumns = @JoinColumn(name = "paciente_id"),
     inverseJoinColumns = @JoinColumn(name = "responsavel_id"))
-    private List<Responsavel> responsaveisLista;
+    private List<Responsavel> responsaveisLista = new ArrayList<>();
 
     public Paciente() {
     }

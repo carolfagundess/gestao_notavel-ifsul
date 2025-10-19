@@ -48,4 +48,9 @@ public class UsuarioService {
         usuarioSalvando.setSenha(result);
         return usuarioDAO.salvarUsuario(usuarioSalvando);
     }
+
+    public Usuario buscarPorCpf(String cpf) {
+        // Apenas repassa a chamada para o DAO, sem regras de negócio adicionais
+        return usuarioDAO.buscarPorCpf(cpf);
+    }
 }

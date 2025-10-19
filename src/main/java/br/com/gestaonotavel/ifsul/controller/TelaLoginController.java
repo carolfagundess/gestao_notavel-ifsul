@@ -4,12 +4,9 @@
  */
 package br.com.gestaonotavel.ifsul.controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
-
 import br.com.gestaonotavel.ifsul.model.Usuario;
 import br.com.gestaonotavel.ifsul.service.UsuarioService;
+import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,6 +16,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
 
 /**
  * FXML Controller class
@@ -56,11 +57,12 @@ public class TelaLoginController implements Initializable {
             System.out.println("Login bem-sucedido! Bem-vindo, " + usuario.getNome());
             abrirTelaPrincipal();
         }catch (IllegalArgumentException erro){
-            showAlert(Alert.AlertType.ERROR, "Erro de autenticação", erro.getMessage());
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro de autenticação", erro.getMessage());
         }
     }
 
     public void abrirTelaPrincipal(){
+
         try {
             // Carrega o FXML da nova tela
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TelaPrincipal.fxml"));
@@ -79,16 +81,9 @@ public class TelaLoginController implements Initializable {
             loginStage.close();
 
         } catch (IOException e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erro", "Falha ao abrir a tela principal.");
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Falha ao abrir a tela principal.");
         }
     }
 
-    private void showAlert(Alert.AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+
 }
