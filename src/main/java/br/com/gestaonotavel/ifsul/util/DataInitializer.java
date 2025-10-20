@@ -7,6 +7,7 @@ import br.com.gestaonotavel.ifsul.service.PacienteService;
 import br.com.gestaonotavel.ifsul.service.ResponsavelService;
 import br.com.gestaonotavel.ifsul.service.UsuarioService;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class DataInitializer {
@@ -41,7 +42,7 @@ public class DataInitializer {
         // --- 3. Criar um Paciente e Associar ---
         Paciente carlos = new Paciente();
         carlos.setNome("Carlos Souza");
-        carlos.setDataNascimento(new Date(119, 2, 22)); // Ano 2019
+        carlos.setDataNascimento(LocalDate.of(2010, 6, 15)); // Ano 2019
         carlos.setDiagnostico("Atraso de fala");
         carlos.setCondicaoClinica("Leve");
         carlos.setEscolaridade("Creche");

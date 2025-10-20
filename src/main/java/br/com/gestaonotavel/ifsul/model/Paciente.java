@@ -2,6 +2,7 @@ package br.com.gestaonotavel.ifsul.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.*;
 
@@ -21,7 +22,7 @@ public class Paciente implements Serializable {
     private String cpf;
 
     @Column(nullable = false)
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 
     @Column(nullable = false, length = 50)
     private String escolaridade; //
@@ -47,7 +48,7 @@ public class Paciente implements Serializable {
     public Paciente() {
     }
 
-    public Paciente(String nome, Date dataNascimento, String condicaoClinica, String escolaridade, String diagnostico, String observacoesGerais) {
+    public Paciente(String nome, LocalDate dataNascimento, String condicaoClinica, String escolaridade, String diagnostico, String observacoesGerais) {
         this.nome = nome;
         this.dataNascimento = dataNascimento;
         this.condicaoClinica = condicaoClinica;
@@ -80,11 +81,11 @@ public class Paciente implements Serializable {
         this.cpf = cpf;
     }
 
-    public Date getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
+    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 

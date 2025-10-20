@@ -7,6 +7,7 @@ package br.com.gestaonotavel.ifsul.controller;
 import br.com.gestaonotavel.ifsul.model.Usuario;
 import br.com.gestaonotavel.ifsul.service.UsuarioService;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
+import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -56,7 +57,7 @@ public class TelaLoginController implements Initializable {
 
             System.out.println("Login bem-sucedido! Bem-vindo, " + usuario.getNome());
             abrirTelaPrincipal();
-        }catch (IllegalArgumentException erro){
+        }catch (RegraDeNegocioException erro){
             AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro de autenticação", erro.getMessage());
         }
     }

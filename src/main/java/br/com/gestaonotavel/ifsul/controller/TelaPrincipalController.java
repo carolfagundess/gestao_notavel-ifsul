@@ -76,7 +76,8 @@ public class TelaPrincipalController implements Initializable {
             stage.setScene(new Scene(root));
             stage.showAndWait();
         }catch (IOException ex){
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir a tela de cadastro");
+            System.out.println(ex.getMessage());
+            //AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir a tela de cadastro");
         }
     }
 
@@ -87,7 +88,7 @@ public class TelaPrincipalController implements Initializable {
 
         colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
         colunaIdade.setCellValueFactory(cellData -> {
-            LocalDate dataNascimento = cellData.getValue().getDataNascimento().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate dataNascimento = cellData.getValue().getDataNascimento();
             int idade = Period.between(dataNascimento, LocalDate.now()).getYears();
             return new SimpleIntegerProperty(idade).asObject();
         });

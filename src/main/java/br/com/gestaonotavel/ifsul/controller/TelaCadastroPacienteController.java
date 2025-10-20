@@ -3,18 +3,14 @@ package br.com.gestaonotavel.ifsul.controller;
 import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.service.PacienteService;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
+import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
-import javafx.event.ActionEvent;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.ResourceBundle;
 
 
@@ -42,38 +38,125 @@ public class TelaCadastroPacienteController implements Initializable {
     private TextField txtDiagnostico;
 
     @FXML
-    private TextField txtEscolaridade;
+    private ComboBox<String> cbxEscolaridade;
 
+    @FXML
+    private TextArea txtCondicaoClinica;
+
+    private PacienteService pacienteService;
+
+    public TelaCadastroPacienteController() {
+    }
+
+    public TelaCadastroPacienteController(PacienteService pacienteService) {
+        this.pacienteService = pacienteService;
+    }
 
     @FXML
     public void handleSalvarButtonAction(ActionEvent event) {
-        PacienteService pacienteService = new PacienteService();
-
         try {
+            validarCamposPreenchidos();
 
-            String nome = txtNome.getText();
-            String cpf = txtCpf.getText();
-            LocalDate dataNascimento = datePickerDataNascimento.getValue();
-            String diagnostico = txtDiagnostico.getText();
-            String escolaridade = txtEscolaridade.getText();
-
-            Paciente paciente =  new Paciente();
-            paciente.setNome(nome);
-            paciente.setCpf(cpf);
-            paciente.setDiagnostico(diagnostico);
-            paciente.setEscolaridade(escolaridade);
-            if (dataNascimento != null) {
-                paciente.setDataNascimento(Date.from(dataNascimento.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-            }
-
+            Paciente paciente = construirPaciente();
             pacienteService.salvarPaciente(paciente);
-        }catch (IllegalArgumentException e){
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro ao salvar", e.getMessage());
+
+            AlertUtil.showAlert(Alert.AlertType.INFORMATION,
+                    "Sucesso",
+                    "Paciente salvo com sucesso!");
+
+            limparFormulario();
+
+        } catch (RegraDeNegocioException e) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR,
+                    "Erro ao salvar",
+                    e.getMessage());
+        } catch (Exception e) {
+            AlertUtil.showAlert(Alert.AlertType.ERROR,
+                    "Erro",
+                    "Erro inesperado: " + e.getMessage());
         }
+    }
+
+    /**
+     * Método para limpar o formulário
+     */
+    @FXML
+    public void handleLimparButtonAction(ActionEvent event) {
+        limparFormulario();
+    }
+
+    /**
+     * Método para cancelar e fechar a janela
+     */
+    @FXML
+    public void handleCancelarButtonAction(ActionEvent event) {
+        Stage stage = (Stage) txtNome.getScene().getWindow();
+        stage.close();
+    }
+
+    /**
+     * Valida se todos os campos obrigatórios foram preenchidos
+     */
+    private void validarCamposPreenchidos() throws RegraDeNegocioException {
+        if (txtNome.getText() == null || txtNome.getText().trim().isEmpty()) {
+            throw new RegraDeNegocioException("Preencha o nome do paciente");
+        }
+        if (datePickerDataNascimento.getValue() == null) {
+            throw new RegraDeNegocioException("Preencha a data de nascimento");
+        }
+        if (txtDiagnostico.getText() == null || txtDiagnostico.getText().trim().isEmpty()) {
+            throw new RegraDeNegocioException("Preencha o diagnóstico");
+        }
+        if (cbxEscolaridade.getValue() == null || cbxEscolaridade.getValue().isEmpty()) {
+            throw new RegraDeNegocioException("Selecione a escolaridade");
+        }
+        if (txtCondicaoClinica.getText() == null || txtCondicaoClinica.getText().trim().isEmpty()) {
+            throw new RegraDeNegocioException("Preencha a condição clínica");
+        }
+    }
+
+    // * Constrói um objeto Paciente com os dados do formulário
+    private Paciente construirPaciente() {
+        Paciente paciente = new Paciente();
+
+        paciente.setNome(txtNome.getText().trim());
+        paciente.setCpf(txtCpf.getText().trim().isEmpty() ? null : txtCpf.getText().trim());
+        paciente.setDataNascimento(datePickerDataNascimento.getValue());
+        paciente.setDiagnostico(txtDiagnostico.getText().trim());
+        paciente.setEscolaridade(cbxEscolaridade.getValue());
+        paciente.setCondicaoClinica(txtCondicaoClinica.getText().trim());
+
+        return paciente;
+    }
+
+    // * Limpa todos os campos do formulário
+    private void limparFormulario() {
+        txtNome.clear();
+        txtCpf.clear();
+        txtDiagnostico.clear();
+        txtCondicaoClinica.clear();
+        cbxEscolaridade.setValue(null);
+        datePickerDataNascimento.setValue(null);
+        txtNome.requestFocus();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+
+        if (this.pacienteService == null) {
+            this.pacienteService = new PacienteService();
+        }
+
+        // Preencher ComboBox de Escolaridade
+        cbxEscolaridade.getItems().addAll(
+                "Sem escolaridade",
+                "Ensino fundamental incompleto",
+                "Ensino fundamental completo",
+                "Ensino médio incompleto",
+                "Ensino médio completo",
+                "Ensino superior incompleto",
+                "Ensino superior completo"
+        );
 
     }
 }

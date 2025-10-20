@@ -2,6 +2,7 @@ package br.com.gestaonotavel.ifsul.service;
 
 import br.com.gestaonotavel.ifsul.dao.UsuarioDAO;
 import br.com.gestaonotavel.ifsul.model.Usuario;
+import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class UsuarioService {
@@ -17,31 +18,31 @@ public class UsuarioService {
         }
 
         // Se qualquer uma das condições falhar, o resultado é o mesmo.
-        throw new IllegalArgumentException("CPF ou senha inválidos.");
+        throw new RegraDeNegocioException("CPF ou senha inválidos.");
     }
 
     public Usuario salvarUsuario(Usuario usuarioSalvando) {
 
         if (usuarioSalvando.getNome() == null || usuarioSalvando.getNome().isEmpty()) {
-            throw new IllegalArgumentException("Preencha o nome do usuário");
+            throw new RegraDeNegocioException("Preencha o nome do usuário");
         } else if (usuarioSalvando.getCpf() == null || usuarioSalvando.getCpf().isEmpty()) {
-            throw new IllegalArgumentException("Preencha o CPF do usuário");
+            throw new RegraDeNegocioException("Preencha o CPF do usuário");
         }else if(usuarioSalvando.getEmail() == null || usuarioSalvando.getEmail().isEmpty()) {
-            throw new IllegalArgumentException("Preencha o email do usuário");
+            throw new RegraDeNegocioException("Preencha o email do usuário");
         }else if (usuarioSalvando.getSenha() == null || usuarioSalvando.getSenha().isEmpty()) {
-            throw new IllegalArgumentException("Preencha a senha do Usuário");
+            throw new RegraDeNegocioException("Preencha a senha do Usuário");
         }else if(usuarioSalvando.getTelefone() == null || usuarioSalvando.getTelefone().isEmpty()) {
-            throw new IllegalArgumentException("Preencha o número de telefone do usuário");
+            throw new RegraDeNegocioException("Preencha o número de telefone do usuário");
         }else if (usuarioSalvando.getCargo() == null || usuarioSalvando.getCargo().isEmpty()) {
-            throw new IllegalArgumentException("Preecha o cargo do usuário");
+            throw new RegraDeNegocioException("Preecha o cargo do usuário");
         }
 
         if(usuarioDAO.buscarPorCpf(usuarioSalvando.getCpf()) != null) {
-            throw new IllegalArgumentException("Usuário com login já cadastrado no sistema");
+            throw new RegraDeNegocioException("Usuário com login já cadastrado no sistema");
         }
 
         if (usuarioDAO.buscarPorEmail(usuarioSalvando.getEmail()) != null) {
-            throw new IllegalArgumentException("Usuário com Email já cadastrado no sistema");
+            throw new RegraDeNegocioException("Usuário com Email já cadastrado no sistema");
         }
 
         String result = BCrypt.hashpw(usuarioSalvando.getSenha(), BCrypt.gensalt());
