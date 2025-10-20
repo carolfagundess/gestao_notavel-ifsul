@@ -4,8 +4,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -24,8 +22,13 @@ public class App extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TelaLogin.fxml"));
         Parent root = loader.load();
 
+        // Carrega o arquivo CSS
+        String css = this.getClass().getResource("/styles/telalogin.css").toExternalForm();
+        root.getStylesheets().add(css);
+
         // Cria a cena com o conteúdo da tela
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root, 800, 600);
+
 
         // Define o título da janela
         stage.setTitle("Gestão Notável - Login");

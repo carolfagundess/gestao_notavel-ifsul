@@ -22,4 +22,10 @@ public class DataChangeManager {
         }
     }
 
+    public void notificarListeners(String entidade){
+        for(DataChangeListener listener : listeners){
+            listener.atualizarDados(entidade);
+        }
+    }
+
 }

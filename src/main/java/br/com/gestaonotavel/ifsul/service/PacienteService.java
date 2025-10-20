@@ -4,6 +4,7 @@ package br.com.gestaonotavel.ifsul.service;
 import br.com.gestaonotavel.ifsul.dao.PacienteDAO;
 import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
+import br.com.gestaonotavel.ifsul.util.DataChangeManager;
 import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
 
 import java.time.LocalDate;
@@ -26,8 +27,10 @@ public class PacienteService {
                 throw new RegraDeNegocioException("CPF já cadastrado para um Paciente");
             }
         }
-
-        return pacienteDAO.salvarPaciente(pacienteSalvando);
+        Paciente salvo =  pacienteDAO.salvarPaciente(pacienteSalvando);
+        //service notificando que os dados foram atualizados
+        DataChangeManager.getInstance().notificarListeners("Paciente");
+        return salvo;
     }
 
     public Paciente criarEAssociarResponsavel(Responsavel responsavel, Paciente paciente) {

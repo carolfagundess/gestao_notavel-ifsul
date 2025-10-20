@@ -1,20 +1,12 @@
 
 package br.com.gestaonotavel.ifsul.controller;
 
-import java.io.IOException;
-import java.net.URL;
-import java.time.LocalDate;
-import java.time.Period;
-import java.time.ZoneId;
-
-import br.com.gestaonotavel.ifsul.service.PacienteService;
-import br.com.gestaonotavel.ifsul.util.AlertUtil;
-import javafx.beans.property.SimpleIntegerProperty;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
+import br.com.gestaonotavel.ifsul.service.PacienteService;
+import br.com.gestaonotavel.ifsul.util.DataChangeListener;
+import br.com.gestaonotavel.ifsul.util.DataChangeManager;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -23,18 +15,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.URL;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.List;
+import java.util.ResourceBundle;
 
 /**
  * FXML Controller class
  *
  * @author carol
  */
-public class TelaPrincipalController implements Initializable {
+public class TelaPrincipalController implements Initializable, DataChangeListener {
 
     /**
      * Initializes the controller class.
@@ -64,6 +62,12 @@ public class TelaPrincipalController implements Initializable {
     @FXML
     private TableColumn<Paciente, Void> colunaAcoes;
 
+    @Override
+    public void atualizarDados(String entidade) {
+        if(entidade.equals("Paciente")){
+            populaTabelaPaciente();
+        }
+    }
 
     @FXML
     public void handleNovoCadastroButtonAction(ActionEvent event) throws IOException {
@@ -83,7 +87,12 @@ public class TelaPrincipalController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        populaTabelaPaciente();
+        DataChangeManager.getInstance().addDataChangeListener(this);
 
+    }
+
+    public void populaTabelaPaciente() {
         PacienteService pacienteService = new PacienteService();
 
         colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
@@ -103,6 +112,6 @@ public class TelaPrincipalController implements Initializable {
         List<Paciente> pacientes = pacienteService.listarTodos();
 
         pacientesTableView.setItems(FXCollections.observableArrayList(pacientes));
-    }    
+    }
     
 }

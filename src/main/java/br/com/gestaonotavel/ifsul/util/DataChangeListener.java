@@ -1,8 +1,6 @@
 package br.com.gestaonotavel.ifsul.util;
 
-public class DataChangeListener {
+public interface DataChangeListener {
 
-    void atualizarDados(String entidade){
-
-    }
+    void atualizarDados(String entidade);
 }
