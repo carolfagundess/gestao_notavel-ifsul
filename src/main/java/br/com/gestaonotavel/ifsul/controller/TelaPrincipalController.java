@@ -4,6 +4,7 @@ package br.com.gestaonotavel.ifsul.controller;
 import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
 import br.com.gestaonotavel.ifsul.service.PacienteService;
+import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.DataChangeListener;
 import br.com.gestaonotavel.ifsul.util.DataChangeManager;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -15,9 +16,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -62,6 +63,8 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     @FXML
     private TableColumn<Paciente, Void> colunaAcoes;
 
+    private Paciente pacienteSelecionado;
+
     @Override
     public void atualizarDados(String entidade) {
         if(entidade.equals("Paciente")){
@@ -80,8 +83,7 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
             stage.setScene(new Scene(root));
             stage.showAndWait();
         }catch (IOException ex){
-            System.out.println(ex.getMessage());
-            //AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir a tela de cadastro");
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir a tela de cadastro");
         }
     }
 
@@ -90,6 +92,53 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         populaTabelaPaciente();
         DataChangeManager.getInstance().addDataChangeListener(this);
 
+        pacientesTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                System.out.println("selecionado Paciente");
+                this.pacienteSelecionado = (Paciente) newValue;
+            }
+        });
+
+        TableColumn<Paciente, Void> colunaAcoes = this.colunaAcoes;
+
+        colunaAcoes.setCellFactory(param -> new TableCell<Paciente, Void>() {
+            private final Button btnEditar = new Button("Editar");
+            private final Button btnExcluir = new Button("Excluir");
+            private final HBox pane = new HBox(btnEditar, btnExcluir);
+
+            {
+                pane.setSpacing(10); // Espaçamento entre os botões
+
+                btnEditar.setOnAction(event -> {
+                    Paciente paciente = getTableView().getItems().get(getIndex());
+                    System.out.println("Editar clicado para: " + paciente.getNome());
+                    iniciarEdicao(paciente);
+                });
+
+                btnExcluir.setOnAction(event -> {
+                    Paciente paciente = getTableView().getItems().get(getIndex());
+                    System.out.println("Excluir clicado para: " + paciente.getNome());
+                    solicitarExclusao(paciente);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(pane);
+                }
+            }
+        });
+
+    }
+
+    private void solicitarExclusao(Paciente paciente) {
+    }
+
+    private void iniciarEdicao(Paciente paciente) {
     }
 
     public void populaTabelaPaciente() {
