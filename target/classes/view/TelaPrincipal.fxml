@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="1012.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gestaonotavel.ifsul.controller.TelaPrincipalController">
+    <stylesheets>
+        <URL value="@/styles/telaprincipal.css" />
+    </stylesheets>
+   <children>
+      <TableView fx:id="pacientesTableView" layoutX="54.0" layoutY="59.0" prefHeight="200.0" prefWidth="922.0">
+        <columns>
+          <TableColumn fx:id="colunaNome" prefWidth="107.0" text="Nome" />
+          <TableColumn fx:id="colunaIdade" prefWidth="57.0" text="Idade" />
+            <TableColumn fx:id="colunaDiagnostico" prefWidth="184.0" text="Diagnóstico" />
+            <TableColumn fx:id="colunaResponsavel" prefWidth="157.0" text="Responsavél" />
+            <TableColumn fx:id="colunaSessao" prefWidth="138.0" text="Próxima Sessão" />
+            <TableColumn fx:id="colunaStatus" minWidth="5.0" prefWidth="115.0" text="Status" />
+            <TableColumn fx:id="colunaAcoes" minWidth="0.0" prefWidth="163.0" text="Ações" />
+        </columns>
+      </TableView>
+      <Button fx:id="btnNovoCrianca" layoutX="708.0" layoutY="321.0" mnemonicParsing="false" onAction="#handleNovoCadastroButtonAction" text="Nova Criança" />
+   </children>
+</AnchorPane>

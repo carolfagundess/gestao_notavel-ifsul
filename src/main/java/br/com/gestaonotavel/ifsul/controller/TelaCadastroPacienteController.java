@@ -6,10 +6,14 @@ import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -52,6 +56,11 @@ public class TelaCadastroPacienteController implements Initializable {
         this.pacienteService = pacienteService;
     }
 
+
+    /**
+     * Método para o botão de salvar o cliente
+     *
+     */
     @FXML
     public void handleSalvarButtonAction(ActionEvent event) {
         try {
@@ -92,6 +101,27 @@ public class TelaCadastroPacienteController implements Initializable {
     public void handleCancelarButtonAction(ActionEvent event) {
         Stage stage = (Stage) txtNome.getScene().getWindow();
         stage.close();
+    }
+
+    /**
+     * Métpdp ára associar um responsavel
+     */
+    @FXML
+    public void handleAssociarButtonAction(ActionEvent event) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaCadastroResponsavel.fxml"));
+            Parent parent= fxmlLoader.load();
+
+            Scene scene = new Scene(parent);
+            Stage stage = new Stage();
+            stage.setScene(scene);
+            stage.setTitle("Cadastro Paciente");
+            stage.setResizable(false);
+            stage.showAndWait();
+        }catch (IOException ex){
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro","Erro ao abrir a tela de cadastro");
+        }
+
     }
 
     /**

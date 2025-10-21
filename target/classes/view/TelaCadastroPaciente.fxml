@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+
+<BorderPane prefHeight="800.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="br.com.gestaonotavel.ifsul.controller.TelaCadastroPacienteController">
+
+    <stylesheets>
+        <URL value="@/styles/telacadastropaciente.css"/>
+    </stylesheets>
+
+    <!-- TOPO - Header Azul -->
+    <top>
+        <VBox prefHeight="80.0" prefWidth="1000.0" style="-fx-background-color: #1976D2; -fx-padding: 20;">
+            <Label style="-fx-text-fill: white; -fx-font-size: 28; -fx-font-weight: bold;" text="Cadastro de Pacientes" />
+            <Label style="-fx-text-fill: #E3F2FD; -fx-font-size: 12;" text="Preencha as informações do paciente" />
+        </VBox>
+    </top>
+
+    <!-- CENTRO - Conteúdo Principal -->
+    <center>
+        <HBox prefHeight="720.0" prefWidth="1000.0" spacing="0.0">
+
+            <!-- MENU LATERAL ESQUERDO -->
+            <VBox prefHeight="720.0" prefWidth="80.0" spacing="10.0"
+                  style="-fx-background-color: #ECEFF1; -fx-padding: 15; -fx-border-color: #BDBDBD; -fx-border-width: 0 1 0 0;">
+                <Button minHeight="60.0" minWidth="60.0" style="-fx-font-size: 24;" text="☰" />
+                <Button minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20; -fx-text-fill: #1976D2;" text="👤" />
+                <Button minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20;" text="📅" />
+                <Button minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20;" text="💰" />
+                <Button minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20;" text="📋" />
+            </VBox>
+
+            <!-- CONTEÚDO PRINCIPAL -->
+            <ScrollPane hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" fitToWidth="true" prefHeight="720.0" prefWidth="920.0">
+                <VBox prefHeight="750.0" prefWidth="900.0" spacing="20.0" style="-fx-padding: 30; -fx-background-color: #FFFFFF;">
+
+                    <!-- SEÇÃO: DADOS PESSOAIS -->
+                    <VBox prefHeight="280.0" prefWidth="840.0" spacing="20.0">
+                        <Label style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #212121;" text="Dados Pessoais" />
+
+                        <!-- Container com foto (lado direito) e campos (lado esquerdo) -->
+                        <HBox prefHeight="250.0" prefWidth="840.0" spacing="30.0">
+
+                            <!-- Lado Esquerdo - Campos -->
+                            <VBox prefHeight="250.0" prefWidth="520.0" spacing="20.0">
+
+                                <!-- Nome Completo -->
+                                <VBox prefHeight="65.0" prefWidth="520.0" spacing="8.0">
+                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #212121;" text="Nome Completo*" />
+                                    <TextField fx:id="txtNome" prefHeight="45.0" prefWidth="520.0"
+                                               promptText="Digite o nome completo do paciente"
+                                               style="-fx-font-size: 12; -fx-padding: 10;" />
+                                </VBox>
+
+                                <!-- Data de Nascimento -->
+                                <VBox prefHeight="65.0" prefWidth="520.0" spacing="8.0">
+                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #212121;" text="Data de Nascimento*" />
+                                    <DatePicker fx:id="datePickerDataNascimento" prefHeight="45.0" prefWidth="520.0"
+                                                style="-fx-font-size: 12; -fx-padding: 10;" />
+                                </VBox>
+
+                                <!-- CPF -->
+                                <VBox prefHeight="65.0" prefWidth="520.0" spacing="8.0">
+                                    <Label style="-fx-font-weight: bold; -fx-text-fill: #212121;" text="CPF*" />
+                                    <TextField fx:id="txtCpf" prefHeight="45.0" prefWidth="520.0"
+                                               promptText="000.000.000-00"
+                                               style="-fx-font-size: 12; -fx-padding: 10;" />
+                                </VBox>
+
+                            </VBox>
+
+                            <!-- Lado Direito - Foto (Placeholder) -->
+                            <VBox prefHeight="250.0" prefWidth="220.0" spacing="8.0">
+                                <Label style="-fx-font-weight: bold; -fx-text-fill: #212121;" text="Foto do Paciente" />
+                                <AnchorPane prefHeight="200.0" prefWidth="220.0"
+                                            style="-fx-border-color: #BDBDBD; -fx-border-width: 2; -fx-border-style: dashed; -fx-background-color: #FAFAFA;">
+                                    <Label alignment="CENTER" layoutX="10.0" layoutY="85.0" prefHeight="30.0" prefWidth="200.0"
+                                           style="-fx-text-fill: #757575; -fx-font-size: 11;" text="Foto (em breve)" />
+                                </AnchorPane>
+                            </VBox>
+
+                        </HBox>
+                    </VBox>
+
+                    <!-- Separador -->
+                    <Separator prefWidth="840.0" style="-fx-border-color: #E0E0E0;" />
+
+                    <!-- SEÇÃO: INFORMAÇÕES CLÍNICAS -->
+                    <VBox prefHeight="280.0" prefWidth="840.0" spacing="20.0">
+                        <Label style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #212121;" text="Informações Clínicas" />
+
+                        <!-- Diagnóstico -->
+                        <VBox prefHeight="65.0" prefWidth="840.0" spacing="8.0">
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #212121;" text="Diagnóstico*" />
+                            <TextField fx:id="txtDiagnostico" prefHeight="45.0" prefWidth="840.0"
+                                       promptText="Digite o diagnóstico"
+                                       style="-fx-font-size: 12; -fx-padding: 10;" />
+                        </VBox>
+
+                        <!-- Escolaridade -->
+                        <VBox prefHeight="65.0" prefWidth="840.0" spacing="8.0">
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #212121;" text="Escolaridade*" />
+                            <ComboBox fx:id="cbxEscolaridade" prefHeight="45.0" prefWidth="840.0"
+                                      style="-fx-font-size: 12; -fx-padding: 8;" />
+                        </VBox>
+
+                        <!-- Condição Clínica -->
+                        <VBox prefHeight="120.0" prefWidth="840.0" spacing="8.0">
+                            <Label style="-fx-font-weight: bold; -fx-text-fill: #212121;" text="Condição Clínica*" />
+                            <TextArea fx:id="txtCondicaoClinica" prefHeight="100.0" prefWidth="840.0" wrapText="true"
+                                      style="-fx-font-size: 12; -fx-padding: 10; -fx-control-inner-background: #FAFAFA;" />
+                        </VBox>
+                    </VBox>
+
+                    <!-- Separador -->
+                    <Separator prefWidth="840.0" style="-fx-border-color: #E0E0E0;" />
+
+                    <!-- BOTÕES DE AÇÃO -->
+                    <HBox prefHeight="50.0" prefWidth="840.0" spacing="15.0" style="-fx-alignment: CENTER_RIGHT;">
+                        <Button fx:id="btnLimpar" minWidth="120.0" prefHeight="40.0"
+                                style="-fx-font-size: 12; -fx-padding: 10;" text="Limpar"
+                                onAction="#handleLimparButtonAction" />
+                        <Button fx:id="btnCancelar" minWidth="120.0" prefHeight="40.0"
+                                style="-fx-font-size: 12; -fx-padding: 10;" text="Cancelar"
+                                onAction="#handleCancelarButtonAction" />
+                        <Button fx:id="btnSalvar" minWidth="120.0" prefHeight="40.0"
+                                style="-fx-font-weight: bold; -fx-font-size: 12; -fx-padding: 10; -fx-background-color: #1976D2; -fx-text-fill: white;"
+                                text="Salvar"
+                                onAction="#handleSalvarButtonAction" />
+                    </HBox>
+
+                </VBox>
+            </ScrollPane>
+
+        </HBox>
+    </center>
+
+</BorderPane>

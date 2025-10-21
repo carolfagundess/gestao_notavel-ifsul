@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane id="AnchorPane" prefHeight="600.0" prefWidth="800.0" styleClass="mainFxmlClass" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="br.com.gestaonotavel.ifsul.controller.TelaLoginController">
+
+    <children>
+        <VBox alignment="CENTER" prefHeight="600.0" prefWidth="800.0" spacing="0.0">
+            <children>
+                <!-- Card Container -->
+                <VBox alignment="TOP_CENTER" prefHeight="500.0" prefWidth="500.0" spacing="30.0" styleClass="login-card">
+                    <padding>
+                        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+                    </padding>
+
+                    <!-- Header -->
+                    <VBox alignment="CENTER" spacing="10.0">
+                        <!-- Icon Placeholder -->
+                        <Pane prefHeight="80.0" prefWidth="80.0" styleClass="icon-container">
+                            <HBox alignment="CENTER" prefHeight="80.0" prefWidth="80.0">
+                                <Label text="👶" style="-fx-font-size: 48;" />
+                            </HBox>
+                        </Pane>
+
+                        <!-- Title -->
+                        <Label text="Pequenos Notáveis" styleClass="app-title" />
+
+                        <!-- Subtitle -->
+                        <Label text="Sistema de Gestão de Terapias Infantis" styleClass="app-subtitle" />
+                    </VBox>
+
+                    <!-- Form Container -->
+                    <VBox spacing="15.0">
+                        <!-- CPF Field -->
+                        <VBox spacing="8.0">
+                            <Label text="CPF" styleClass="form-label" />
+                            <TextField fx:id="cpfTextField" prefHeight="40.0" promptText="000.000.000-00" styleClass="form-input" />
+                        </VBox>
+
+                        <!-- Senha Field -->
+                        <VBox spacing="8.0">
+                            <Label text="Senha" styleClass="form-label" />
+                            <PasswordField fx:id="senhaPasswordField" prefHeight="40.0" promptText="Digite sua senha" styleClass="form-input" />
+                        </VBox>
+                    </VBox>
+
+                    <!-- Login Button -->
+                    <Button mnemonicParsing="false" onAction="#handleEntrarButtonAction" prefHeight="45.0" prefWidth="200.0" text="Entrar" styleClass="btn-login" />
+
+                    <!-- Forgot Password Link -->
+                    <Hyperlink alignment="CENTER" text="Esqueci minha senha" styleClass="link-forgot" />
+
+                </VBox>
+
+                <!-- Footer -->
+                <Label text="© 2024 Pequenos Notáveis. Todos os direitos reservados." styleClass="footer-text" />
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>
