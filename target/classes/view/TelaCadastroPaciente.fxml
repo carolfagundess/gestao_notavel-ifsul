@@ -53,7 +53,7 @@
                                                 <VBox prefHeight="50.0" prefWidth="520.0" spacing="5.0">
                                                     <children>
                                                         <Label style="-fx-font-weight: bold; -fx-text-fill: #212121;" text="Nome Completo*" />
-                                                        <TextField fx:id="txtNome" prefHeight="35.0" prefWidth="520.0" promptText="Digite o nome completo do paciente" style="-fx-font-size: 12; -fx-padding: 8;" />
+                                                        <TextField fx:id="txtNomePaciente" prefHeight="35.0" prefWidth="520.0" promptText="Digite o nome completo do paciente" style="-fx-font-size: 12; -fx-padding: 8;" />
                                                     </children>
                                                 </VBox>
 

@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -53,6 +54,30 @@ public class TelaCadastroPacienteController implements Initializable {
 
     @FXML
     private Label lblCpfResponsavel;
+
+    @FXML
+    private Label lblStatusResponsavel;
+
+    @FXML
+    private Button btnSalvar;
+
+    @FXML
+    private Button btnLimpar;
+
+    @FXML
+    private Button btnCancelar;
+
+    @FXML
+    private Button btnAssociar;
+
+    @FXML
+    private VBox vboxResponsavelPreview;
+
+    @FXML
+    private VBox vboxSemResponsavel;
+
+    @FXML
+    private Button btnRemoverResponsavel;
 
     @FXML
     private Label lblTelefoneResponsavel;
@@ -148,7 +173,19 @@ public class TelaCadastroPacienteController implements Initializable {
 
     @FXML
     public void handleRemoverResponsavelButtonAction(ActionEvent event) {
+        this.responsavel = null;
 
+        // Limpar labels
+        lblNomeResponsavel.setText("-");
+        lblCpfResponsavel.setText("-");
+        lblTelefoneResponsavel.setText("-");
+
+        // Ocultar preview e mostrar aviso
+        vboxResponsavelPreview.setVisible(false);
+        vboxResponsavelPreview.setManaged(false);
+        vboxSemResponsavel.setVisible(true);
+        vboxSemResponsavel.setManaged(true);
+        lblStatusResponsavel.setText("(Nenhum responsável associado)");
     }
 
     /**
@@ -189,6 +226,12 @@ public class TelaCadastroPacienteController implements Initializable {
         lblNomeResponsavel.setText(responsavel.getNome());
         lblCpfResponsavel.setText(responsavel.getCpf());
         lblTelefoneResponsavel.setText(responsavel.getTelefone());
+
+        vboxResponsavelPreview.setVisible(true);
+        vboxResponsavelPreview.setManaged(true);
+        vboxSemResponsavel.setVisible(false);
+        vboxSemResponsavel.setManaged(false);
+        lblStatusResponsavel.setText("(Responsável associado)");
     }
 
     // * Limpa todos os campos do formulário

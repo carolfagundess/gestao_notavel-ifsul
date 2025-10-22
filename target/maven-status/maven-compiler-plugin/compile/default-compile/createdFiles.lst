@@ -1,4 +1,5 @@
 br\com\gestaonotavel\ifsul\model\Usuario.class
+br\com\gestaonotavel\ifsul\controller\TelaPrincipalController$2.class
 br\com\gestaonotavel\ifsul\dao\PacienteDAO.class
 br\com\gestaonotavel\ifsul\model\Paciente.class
 br\com\gestaonotavel\ifsul\model\FormaPagamento.class
