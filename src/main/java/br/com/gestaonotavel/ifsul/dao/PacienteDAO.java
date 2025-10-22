@@ -14,6 +14,8 @@ public class PacienteDAO {
         EntityManager em = JpaUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         tx.begin();
+
+
         try {
             Paciente pacienteSalvo = em.merge(paciente);
             tx.commit();

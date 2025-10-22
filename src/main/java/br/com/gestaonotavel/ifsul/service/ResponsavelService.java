@@ -5,6 +5,7 @@ import br.com.gestaonotavel.ifsul.dao.ResponsavelDAO;
 import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class ResponsavelService {
 
     public Responsavel salvar(Responsavel responsavelSalvando) {
 
-        Date dataHoje = new Date();
+        LocalDate hoje = LocalDate.now();
 
         if (responsavelSalvando == null) {
             throw new IllegalArgumentException("Preencha as informações");
@@ -26,7 +27,7 @@ public class ResponsavelService {
             throw new IllegalArgumentException("Preencha o CPF do Responsavél");
         } else if (responsavelSalvando.getTelefone() == null || responsavelSalvando.getTelefone().isEmpty()) {
             throw new IllegalArgumentException("Preencha o número de telefone do Responsavél");
-        } else if (responsavelSalvando.getDataNascimento().after(dataHoje)) {
+        } else if (responsavelSalvando.getDataNascimento().isAfter(hoje)) {
             throw new IllegalArgumentException("Preencha uma data de nascimento do Responsavel válida");
         }
 

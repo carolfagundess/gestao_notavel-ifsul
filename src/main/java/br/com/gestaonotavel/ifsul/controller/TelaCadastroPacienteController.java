@@ -1,6 +1,7 @@
 package br.com.gestaonotavel.ifsul.controller;
 
 import br.com.gestaonotavel.ifsul.model.Paciente;
+import br.com.gestaonotavel.ifsul.model.Responsavel;
 import br.com.gestaonotavel.ifsul.service.PacienteService;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
@@ -30,7 +31,7 @@ public class TelaCadastroPacienteController implements Initializable {
      */
 
     @FXML
-    private TextField txtNome;
+    private TextField txtNomePaciente;
 
     @FXML
     private TextField txtCpf;
@@ -47,7 +48,18 @@ public class TelaCadastroPacienteController implements Initializable {
     @FXML
     private TextArea txtCondicaoClinica;
 
+    @FXML
+    private Label lblNomeResponsavel;
+
+    @FXML
+    private Label lblCpfResponsavel;
+
+    @FXML
+    private Label lblTelefoneResponsavel;
+
     private PacienteService pacienteService;
+
+    private Responsavel responsavel;
 
     public TelaCadastroPacienteController() {
     }
@@ -67,7 +79,12 @@ public class TelaCadastroPacienteController implements Initializable {
             validarCamposPreenchidos();
 
             Paciente paciente = construirPaciente();
-            pacienteService.salvarPaciente(paciente);
+
+            if (this.responsavel != null) {
+                pacienteService.criarEAssociarResponsavel(this.responsavel, paciente);
+            }else{
+                pacienteService.salvarPaciente(paciente);
+            }
 
             AlertUtil.showAlert(Alert.AlertType.INFORMATION,
                     "Sucesso",
@@ -99,12 +116,12 @@ public class TelaCadastroPacienteController implements Initializable {
      */
     @FXML
     public void handleCancelarButtonAction(ActionEvent event) {
-        Stage stage = (Stage) txtNome.getScene().getWindow();
+        Stage stage = (Stage) txtNomePaciente.getScene().getWindow();
         stage.close();
     }
 
     /**
-     * Métpdp ára associar um responsavel
+     * Ira associar um responsavel
      */
     @FXML
     public void handleAssociarButtonAction(ActionEvent event) {
@@ -118,9 +135,19 @@ public class TelaCadastroPacienteController implements Initializable {
             stage.setTitle("Cadastro Paciente");
             stage.setResizable(false);
             stage.showAndWait();
+            TelaCadastroResponsavelController telaCadastroResponsavelController = fxmlLoader.getController();
+            this.responsavel = telaCadastroResponsavelController.getResponsavel();
+            if(this.responsavel != null){
+                preencherFormulariorResponsavel(this.responsavel);
+            }
         }catch (IOException ex){
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro","Erro ao abrir a tela de cadastro");
+            System.out.println(ex.getMessage());
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Ocorreu um erro ao abrir a tela de cadastro");
         }
+    }
+
+    @FXML
+    public void handleRemoverResponsavelButtonAction(ActionEvent event) {
 
     }
 
@@ -128,7 +155,7 @@ public class TelaCadastroPacienteController implements Initializable {
      * Valida se todos os campos obrigatórios foram preenchidos
      */
     private void validarCamposPreenchidos() throws RegraDeNegocioException {
-        if (txtNome.getText() == null || txtNome.getText().trim().isEmpty()) {
+        if (txtNomePaciente.getText() == null || txtNomePaciente.getText().trim().isEmpty()) {
             throw new RegraDeNegocioException("Preencha o nome do paciente");
         }
         if (datePickerDataNascimento.getValue() == null) {
@@ -145,11 +172,10 @@ public class TelaCadastroPacienteController implements Initializable {
         }
     }
 
-    // * Constrói um objeto Paciente com os dados do formulário
     private Paciente construirPaciente() {
         Paciente paciente = new Paciente();
 
-        paciente.setNome(txtNome.getText().trim());
+        paciente.setNome(txtNomePaciente.getText().trim());
         paciente.setCpf(txtCpf.getText().trim().isEmpty() ? null : txtCpf.getText().trim());
         paciente.setDataNascimento(datePickerDataNascimento.getValue());
         paciente.setDiagnostico(txtDiagnostico.getText().trim());
@@ -159,15 +185,21 @@ public class TelaCadastroPacienteController implements Initializable {
         return paciente;
     }
 
+    private void preencherFormulariorResponsavel(Responsavel responsavel) {
+        lblNomeResponsavel.setText(responsavel.getNome());
+        lblCpfResponsavel.setText(responsavel.getCpf());
+        lblTelefoneResponsavel.setText(responsavel.getTelefone());
+    }
+
     // * Limpa todos os campos do formulário
     private void limparFormulario() {
-        txtNome.clear();
+        txtNomePaciente.clear();
         txtCpf.clear();
         txtDiagnostico.clear();
         txtCondicaoClinica.clear();
         cbxEscolaridade.setValue(null);
         datePickerDataNascimento.setValue(null);
-        txtNome.requestFocus();
+        txtNomePaciente.requestFocus();
     }
 
     @Override

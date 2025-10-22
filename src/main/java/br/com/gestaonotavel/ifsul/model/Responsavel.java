@@ -2,6 +2,7 @@ package br.com.gestaonotavel.ifsul.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,8 +22,7 @@ public class Responsavel implements Serializable {
     @Column(length = 11, nullable = false)
     private String telefone;
     @Column(nullable = false)
-    @Temporal(TemporalType.DATE)
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
     @Column(name = "horas_voluntariado")
     private Integer horasVoluntariado;
     @Column(name = "creditos")
@@ -35,7 +35,7 @@ public class Responsavel implements Serializable {
     public Responsavel() {
     }
 
-    public Responsavel(Long id, String nome, String cpf, String telefone, Date dataNascimento, Integer horasVoluntariado, Double creditos) {
+    public Responsavel(Long id, String nome, String cpf, String telefone, LocalDate dataNascimento, Integer horasVoluntariado, Double creditos) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
@@ -77,11 +77,11 @@ public class Responsavel implements Serializable {
         this.telefone = telefone;
     }
 
-    public Date getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return dataNascimento;
     }
 
-    public void setDataNascimento(Date dataNascimento) {
+    public void setDataNascimento(LocalDate dataNascimento) {
         this.dataNascimento = dataNascimento;
     }
 

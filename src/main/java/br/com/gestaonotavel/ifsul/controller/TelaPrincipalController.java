@@ -83,6 +83,7 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
             stage.setScene(new Scene(root));
             stage.showAndWait();
         }catch (IOException ex){
+            System.out.println(ex.getMessage());
             AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir a tela de cadastro");
         }
     }

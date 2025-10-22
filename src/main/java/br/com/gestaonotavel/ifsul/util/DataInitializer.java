@@ -36,7 +36,7 @@ public class DataInitializer {
         ana.setNome("Ana Maria Silva");
         ana.setCpf("11122233344");
         ana.setTelefone("51999887766");
-        ana.setDataNascimento(new Date(90, 7, 15)); // Ano - 1900, Mês (0-11), Dia
+        ana.setDataNascimento(LocalDate.of(1984, 12, 5)); // Ano - 1900, Mês (0-11), Dia
         Responsavel responsavelSalvo = responsavelService.salvar(ana);
 
         // --- 3. Criar um Paciente e Associar ---

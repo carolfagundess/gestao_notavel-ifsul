@@ -20,6 +20,7 @@ br\com\gestaonotavel\ifsul\controller\TelaPrincipalController.class
 br\com\gestaonotavel\ifsul\model\TipoAtividade.class
 br\com\gestaonotavel\ifsul\controller\TelaLoginController.class
 br\com\gestaonotavel\ifsul\dao\TipoAtividadeDAO.class
+br\com\gestaonotavel\ifsul\controller\TelaCadastroResponsavelController.class
 br\com\gestaonotavel\ifsul\controller\TelaPrincipalController$1.class
 br\com\gestaonotavel\ifsul\util\RegraDeNegocioException.class
 br\com\gestaonotavel\ifsul\dao\EspecialistaDAO.class

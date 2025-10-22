@@ -24,7 +24,7 @@ public class Especialista implements Serializable {
     @Column(nullable = false, unique = true, length = 50, name = "registro_profissional")
     private String registroProfissional;
 
-    public Especialista(Integer idEspecialista) {}
+    public Especialista() {}
 
     public Especialista(Integer idEspecialista, String nome, String especialidade, Double valorSessao, Integer duracao, Integer maxPacientes, Integer pacientesAtuais, String registroProfissional) {
         this.idEspecialista = idEspecialista;
