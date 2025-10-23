@@ -21,6 +21,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -88,6 +89,48 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     private ChangeListener<String> filtroStatusChangeListener;
     private ChangeListener<String> filtroResponsavelChangeListener;
 
+    @FXML
+    public void handleNovoCadastroButtonAction(ActionEvent event) {
+        abrirTelaCadastro(null);
+    }
+
+    @FXML
+    private void handleAbrirAgendamento(ActionEvent actionEvent){
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaAgendamento.fxml"));
+            Parent parent = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Agendamento de Atendimentos");
+            stage.setScene(new Scene(parent));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        }catch (IOException e){
+            e.printStackTrace();
+            AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Erro", "Erro ao abrir a tela de cadastro!");
+        }
+    }
+
+    @FXML
+    private void handleLimparFiltros(ActionEvent event) {
+        // Remover listeners temporariamente para evitar trigger múltiplo
+        txtBuscar.textProperty().removeListener(filtroTextoChangeListener);
+        cbxFiltroStatus.valueProperty().removeListener(filtroStatusChangeListener);
+        cbxFiltroResponsavel.valueProperty().removeListener(filtroResponsavelChangeListener);
+
+        // Limpar campos
+        txtBuscar.clear();
+        cbxFiltroStatus.setValue("Todos");
+        cbxFiltroResponsavel.setValue("Todos"); // aplicarFiltros será chamado aqui
+
+        // Readicionar listeners
+        txtBuscar.textProperty().addListener(filtroTextoChangeListener);
+        cbxFiltroStatus.valueProperty().addListener(filtroStatusChangeListener);
+        cbxFiltroResponsavel.valueProperty().addListener(filtroResponsavelChangeListener);
+
+        // Garantir que a tabela atualize com os filtros limpos
+        aplicarFiltros();
+    }
 
     // ==================== INITIALIZE ====================
     @Override
@@ -227,7 +270,7 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         return btn;
     }
 
-    // ==================== CONFIGURAÇÃO DE FILTROS (ATUALIZADO) ====================
+    // ==================== CONFIGURAÇÃO DE FILTROS ====================
     private void configurarFiltros() {
         // ComboBox Status
         cbxFiltroStatus.getItems().addAll("Todos", "Ativo", "Inativo", "Pendente");
@@ -287,27 +330,6 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
 
         pacientesTableView.setItems(listaFiltrada);
         atualizarContadores();
-    }
-
-    @FXML
-    private void handleLimparFiltros(ActionEvent event) {
-        // Remover listeners temporariamente para evitar trigger múltiplo
-        txtBuscar.textProperty().removeListener(filtroTextoChangeListener);
-        cbxFiltroStatus.valueProperty().removeListener(filtroStatusChangeListener);
-        cbxFiltroResponsavel.valueProperty().removeListener(filtroResponsavelChangeListener);
-
-        // Limpar campos
-        txtBuscar.clear();
-        cbxFiltroStatus.setValue("Todos");
-        cbxFiltroResponsavel.setValue("Todos"); // aplicarFiltros será chamado aqui
-
-        // Readicionar listeners
-        txtBuscar.textProperty().addListener(filtroTextoChangeListener);
-        cbxFiltroStatus.valueProperty().addListener(filtroStatusChangeListener);
-        cbxFiltroResponsavel.valueProperty().addListener(filtroResponsavelChangeListener);
-
-        // Garantir que a tabela atualize com os filtros limpos
-        aplicarFiltros();
     }
 
     // ==================== CARREGAMENTO DE DADOS (ATUALIZADO) ====================
@@ -384,10 +406,6 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     }
 
     // ==================== AÇÕES DE PACIENTE ====================
-    @FXML
-    public void handleNovoCadastroButtonAction(ActionEvent event) {
-        abrirTelaCadastro(null);
-    }
 
     private void visualizarPaciente(Paciente paciente) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

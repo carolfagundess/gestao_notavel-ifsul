@@ -3,6 +3,8 @@ package br.com.gestaonotavel.ifsul.service;
 import br.com.gestaonotavel.ifsul.dao.EspecialistaDAO;
 import br.com.gestaonotavel.ifsul.model.Especialista;
 
+import java.util.List;
+
 public class EspecialistaService {
 
     private EspecialistaDAO especialistaDAO = new EspecialistaDAO();
@@ -24,5 +26,9 @@ public class EspecialistaService {
         }
 
         return especialistaDAO.salvar(especialistaSalvando);
+    }
+
+    public List<Especialista> listarTodos() {
+        return especialistaDAO.listarTodos();
     }
 }

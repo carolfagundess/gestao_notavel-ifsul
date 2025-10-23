@@ -48,7 +48,7 @@ public class TelaCadastroResponsavelController implements Initializable {
 
             AlertUtil.showAlert(Alert.AlertType.INFORMATION,
                     "Sucesso",
-                    "Paciente salvo com sucesso!");
+                    "Responsável salvo com sucesso!");
 
             limparFormulario();
             Stage stage = (Stage) txtNome.getScene().getWindow();
@@ -63,17 +63,6 @@ public class TelaCadastroResponsavelController implements Initializable {
                     "Erro",
                     "Erro inesperado: " + e.getMessage());
         }
-    }
-
-    private Responsavel construirResponsavel() {
-        Responsavel responsavel = new Responsavel();
-
-        responsavel.setNome(txtNome.getText().trim());
-        responsavel.setCpf(txtCpf.getText().trim().isEmpty() ? null : txtCpf.getText().trim());
-        responsavel.setDataNascimento(datePickerDataNascimento.getValue());
-        responsavel.setTelefone(txtTelefone.getText().trim());
-
-        return responsavel;
     }
 
     @FXML
@@ -92,6 +81,17 @@ public class TelaCadastroResponsavelController implements Initializable {
         if (this.responsavelService == null) {
             this.responsavelService = new ResponsavelService();
         }
+    }
+
+    private Responsavel construirResponsavel() {
+        Responsavel responsavel = new Responsavel();
+
+        responsavel.setNome(txtNome.getText().trim());
+        responsavel.setCpf(txtCpf.getText().trim().isEmpty() ? null : txtCpf.getText().trim());
+        responsavel.setDataNascimento(datePickerDataNascimento.getValue());
+        responsavel.setTelefone(txtTelefone.getText().trim());
+
+        return responsavel;
     }
 
     public Responsavel getResponsavel() {
