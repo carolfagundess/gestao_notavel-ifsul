@@ -28,11 +28,9 @@ public class TelaCadastroResponsavelController implements Initializable {
     @FXML
     private DatePicker datePickerDataNascimento;
 
-    private ResponsavelService responsavelService;
+    private final ResponsavelService responsavelService;
 
     private Responsavel responsavel;
-
-    public TelaCadastroResponsavelController() {}
 
     public TelaCadastroResponsavelController(ResponsavelService responsavelService) {
         this.responsavelService = responsavelService;
@@ -78,9 +76,6 @@ public class TelaCadastroResponsavelController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        if (this.responsavelService == null) {
-            this.responsavelService = new ResponsavelService();
-        }
     }
 
     private Responsavel construirResponsavel() {

@@ -3,6 +3,7 @@ package br.com.gestaonotavel.ifsul.controller;
 import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
 import br.com.gestaonotavel.ifsul.service.PacienteService;
+import br.com.gestaonotavel.ifsul.service.ResponsavelService;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
 import javafx.event.ActionEvent;
@@ -82,12 +83,9 @@ public class TelaCadastroPacienteController implements Initializable {
     @FXML
     private Label lblTelefoneResponsavel;
 
-    private PacienteService pacienteService;
+    private final PacienteService pacienteService;
 
     private Responsavel responsavel;
-
-    public TelaCadastroPacienteController() {
-    }
 
     public TelaCadastroPacienteController(PacienteService pacienteService) {
         this.pacienteService = pacienteService;
@@ -152,6 +150,10 @@ public class TelaCadastroPacienteController implements Initializable {
     public void handleAssociarButtonAction(ActionEvent event) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaCadastroResponsavel.fxml"));
+            fxmlLoader.setControllerFactory(TelaCadastroResponsavelController -> {
+                ResponsavelService responsavelService = new ResponsavelService();
+                return new TelaCadastroResponsavelController(responsavelService);
+            });
             Parent parent= fxmlLoader.load();
 
             Scene scene = new Scene(parent);
@@ -247,10 +249,6 @@ public class TelaCadastroPacienteController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
-        if (this.pacienteService == null) {
-            this.pacienteService = new PacienteService();
-        }
 
         // Preencher ComboBox de Escolaridade
         cbxEscolaridade.getItems().addAll(

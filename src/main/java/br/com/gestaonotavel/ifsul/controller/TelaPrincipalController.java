@@ -2,7 +2,10 @@ package br.com.gestaonotavel.ifsul.controller;
 
 import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
+import br.com.gestaonotavel.ifsul.service.AtendimentoService;
+import br.com.gestaonotavel.ifsul.service.EspecialistaService;
 import br.com.gestaonotavel.ifsul.service.PacienteService;
+import br.com.gestaonotavel.ifsul.service.ResponsavelService;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.DataChangeListener;
 import br.com.gestaonotavel.ifsul.util.DataChangeManager;
@@ -98,6 +101,11 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     private void handleAbrirAgendamento(ActionEvent actionEvent){
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaAgendamento.fxml"));
+            fxmlLoader.setControllerFactory(TelaAgendamentoController -> {
+                EspecialistaService especialistaService = new EspecialistaService();
+                AtendimentoService atendimentoService = new AtendimentoService();
+                return new TelaAgendamentoController(pacienteService, especialistaService, atendimentoService);
+            });
             Parent parent = fxmlLoader.load();
             Stage stage = new Stage();
             stage.setTitle("Agendamento de Atendimentos");
@@ -486,6 +494,9 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     private void abrirTelaCadastro(Paciente paciente) {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaCadastroPaciente.fxml"));
+            fxmlLoader.setControllerFactory(TelaCadastroPacienteController ->{
+                return new TelaCadastroPacienteController(pacienteService);
+            });
             Parent root = fxmlLoader.load();
 
             // Se for edição, passar o paciente para o controller da tela de cadastro

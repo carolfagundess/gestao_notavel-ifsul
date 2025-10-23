@@ -73,10 +73,15 @@ public class TelaAgendamentoController implements Initializable {
     private Button btnSalvar;
 
     // --- Services ---
-    PacienteService pacienteService = new PacienteService();
-    EspecialistaService especialistaService = new EspecialistaService();
-    AtendimentoService atendimentoService = new AtendimentoService();
+    final PacienteService pacienteService;
+    final EspecialistaService especialistaService;
+    final AtendimentoService atendimentoService;
 
+    public TelaAgendamentoController(PacienteService pacienteService, EspecialistaService especialistaService, AtendimentoService atendimentoService) {
+        this.pacienteService = pacienteService;
+        this.especialistaService = especialistaService;
+        this.atendimentoService = atendimentoService;
+    }
 
     // --- Métodos handle para os botões
     @FXML

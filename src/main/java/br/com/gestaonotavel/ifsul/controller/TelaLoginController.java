@@ -38,6 +38,11 @@ public class TelaLoginController implements Initializable {
     @FXML
     private TextField senhaPasswordField;
 
+    final UsuarioService usuarioService;
+
+    public TelaLoginController(UsuarioService usuarioService) {
+        this.usuarioService = usuarioService;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -46,8 +51,6 @@ public class TelaLoginController implements Initializable {
 
     @FXML
     private void handleEntrarButtonAction(ActionEvent event) {
-
-        UsuarioService usuarioService = new UsuarioService();
 
         try {
             String cpf  = cpfTextField.getText();
