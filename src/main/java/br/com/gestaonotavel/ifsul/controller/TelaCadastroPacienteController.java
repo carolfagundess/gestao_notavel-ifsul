@@ -4,6 +4,7 @@ import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
 import br.com.gestaonotavel.ifsul.service.PacienteService;
 import br.com.gestaonotavel.ifsul.service.ResponsavelService;
+import br.com.gestaonotavel.ifsul.service.factory.ServiceFactory;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
 import javafx.event.ActionEvent;
@@ -151,8 +152,8 @@ public class TelaCadastroPacienteController implements Initializable {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaCadastroResponsavel.fxml"));
             fxmlLoader.setControllerFactory(TelaCadastroResponsavelController -> {
-                ResponsavelService responsavelService = new ResponsavelService();
-                return new TelaCadastroResponsavelController(responsavelService);
+                ServiceFactory serviceFactory =  ServiceFactory.getInstance();
+                return new TelaCadastroResponsavelController(serviceFactory.getResponsavelService());
             });
             Parent parent= fxmlLoader.load();
 

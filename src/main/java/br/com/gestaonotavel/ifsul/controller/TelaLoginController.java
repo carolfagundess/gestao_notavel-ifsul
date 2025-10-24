@@ -6,6 +6,7 @@ package br.com.gestaonotavel.ifsul.controller;
 
 import br.com.gestaonotavel.ifsul.model.Usuario;
 import br.com.gestaonotavel.ifsul.service.UsuarioService;
+import br.com.gestaonotavel.ifsul.service.factory.ServiceFactory;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
 import javafx.event.ActionEvent;
@@ -68,8 +69,13 @@ public class TelaLoginController implements Initializable {
     public void abrirTelaPrincipal(){
 
         try {
+            ServiceFactory serviceFactory = ServiceFactory.getInstance();
+
             // Carrega o FXML da nova tela
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TelaPrincipal.fxml"));
+            loader.setControllerFactory(TelaPrincipalController -> {
+                return new TelaPrincipalController(serviceFactory.getPacienteService());
+            });
             Parent root = loader.load();
 
             // Cria um novo palco (Stage), que é uma nova janela

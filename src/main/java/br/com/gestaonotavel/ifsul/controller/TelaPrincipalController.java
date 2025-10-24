@@ -6,6 +6,7 @@ import br.com.gestaonotavel.ifsul.service.AtendimentoService;
 import br.com.gestaonotavel.ifsul.service.EspecialistaService;
 import br.com.gestaonotavel.ifsul.service.PacienteService;
 import br.com.gestaonotavel.ifsul.service.ResponsavelService;
+import br.com.gestaonotavel.ifsul.service.factory.ServiceFactory;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.DataChangeListener;
 import br.com.gestaonotavel.ifsul.util.DataChangeManager;
@@ -83,7 +84,7 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     private Label lblTotalRegistros;
 
     // ==================== SERVIÇOS E LISTAS ====================
-    private PacienteService pacienteService;
+    final PacienteService pacienteService;
     private ObservableList<Paciente> listaPacientes;
     private ObservableList<Paciente> listaFiltrada;
 
@@ -91,6 +92,10 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     private ChangeListener<String> filtroTextoChangeListener;
     private ChangeListener<String> filtroStatusChangeListener;
     private ChangeListener<String> filtroResponsavelChangeListener;
+
+    public TelaPrincipalController(PacienteService pacienteService) {
+        this.pacienteService = pacienteService;
+    }
 
     @FXML
     public void handleNovoCadastroButtonAction(ActionEvent event) {
@@ -100,11 +105,11 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     @FXML
     private void handleAbrirAgendamento(ActionEvent actionEvent){
         try {
+            ServiceFactory serviceFactory = ServiceFactory.getInstance();
+
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaAgendamento.fxml"));
             fxmlLoader.setControllerFactory(TelaAgendamentoController -> {
-                EspecialistaService especialistaService = new EspecialistaService();
-                AtendimentoService atendimentoService = new AtendimentoService();
-                return new TelaAgendamentoController(pacienteService, especialistaService, atendimentoService);
+                return new TelaAgendamentoController(pacienteService, serviceFactory.getEspecialistaService(), serviceFactory.getAtendimentoService());
             });
             Parent parent = fxmlLoader.load();
             Stage stage = new Stage();
@@ -143,7 +148,6 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     // ==================== INITIALIZE ====================
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        this.pacienteService = new PacienteService();
         this.listaPacientes = FXCollections.observableArrayList();
         this.listaFiltrada = FXCollections.observableArrayList();
 
@@ -493,9 +497,11 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
 
     private void abrirTelaCadastro(Paciente paciente) {
         try {
+            ServiceFactory serviceFactory = ServiceFactory.getInstance();
+
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaCadastroPaciente.fxml"));
             fxmlLoader.setControllerFactory(TelaCadastroPacienteController ->{
-                return new TelaCadastroPacienteController(pacienteService);
+                return new TelaCadastroPacienteController(serviceFactory.getPacienteService());
             });
             Parent root = fxmlLoader.load();
 
