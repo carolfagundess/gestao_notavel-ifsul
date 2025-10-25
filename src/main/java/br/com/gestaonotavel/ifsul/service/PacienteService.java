@@ -18,8 +18,9 @@ public class PacienteService {
 
     public Paciente salvarPaciente(Paciente pacienteSalvando) {
 
-
         validarPaciente(pacienteSalvando);
+
+
 
         //campos opcionais
         if (pacienteSalvando.getCpf() != null && !pacienteSalvando.getCpf().isEmpty()) {
@@ -27,6 +28,12 @@ public class PacienteService {
                 throw new RegraDeNegocioException("CPF já cadastrado para um Paciente");
             }
         }
+
+        if (pacienteSalvando.getCpf() != null && !pacienteSalvando.getCpf().trim().isEmpty()) {
+            String cpfLimpo = pacienteSalvando.getCpf().replaceAll("[^0-9]", "");
+            pacienteSalvando.setCpf(cpfLimpo);
+        }
+
         Paciente salvo =  pacienteDAO.salvarPaciente(pacienteSalvando);
         //service notificando que os dados foram atualizados
         DataChangeManager.getInstance().notificarListeners("Paciente");

@@ -35,6 +35,12 @@ public class ResponsavelService {
             throw new IllegalArgumentException("Este CPF já está cadastrado! Tente cadastrar um documento válido");
         }
 
+        // Limpar CPF (remover caracteres não numéricos)
+        if (responsavelSalvando.getCpf() != null && !responsavelSalvando.getCpf().trim().isEmpty()) {
+            String cpfLimpo = responsavelSalvando.getCpf().replaceAll("[^0-9]", "");
+            responsavelSalvando.setCpf(cpfLimpo);
+        }
+
         return responsavelDAO.salvarResponsavel(responsavelSalvando);
     }
 }
