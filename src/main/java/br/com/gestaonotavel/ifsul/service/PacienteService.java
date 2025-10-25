@@ -23,8 +23,8 @@ public class PacienteService {
         //campos opcionais
         if (pacienteSalvando.getCpf() != null && !pacienteSalvando.getCpf().isEmpty()) {
             String cpfLimpo =  pacienteSalvando.getCpf().replaceAll("[^0-9]", "");
-
-            if (pacienteDAO.buscarPorCpf(pacienteSalvando.getCpf()) != null ){
+            Paciente pacienteExistente = pacienteDAO.buscarPorCpf(cpfLimpo);
+            if (pacienteExistente != null && pacienteExistente.getIdPaciente() != pacienteSalvando.getIdPaciente()) {
                 throw new RegraDeNegocioException("CPF já cadastrado para um Paciente");
             }
             pacienteSalvando.setCpf(cpfLimpo);
@@ -43,6 +43,10 @@ public class PacienteService {
 
     public List<Paciente> listarTodos() {
         return pacienteDAO.listarTodos();
+    }
+
+    public void deletarPaciente(Paciente paciente) {
+        pacienteDAO.excluir(paciente.getId());
     }
 
     private void validarPaciente(Paciente pacienteSalvando) {

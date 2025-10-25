@@ -2,28 +2,27 @@ package br.com.gestaonotavel.ifsul.controller;
 
 import br.com.gestaonotavel.ifsul.model.Paciente;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
-import br.com.gestaonotavel.ifsul.service.AtendimentoService;
-import br.com.gestaonotavel.ifsul.service.EspecialistaService;
 import br.com.gestaonotavel.ifsul.service.PacienteService;
-import br.com.gestaonotavel.ifsul.service.ResponsavelService;
 import br.com.gestaonotavel.ifsul.service.factory.ServiceFactory;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.DataChangeListener;
 import br.com.gestaonotavel.ifsul.util.DataChangeManager;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener; // Importação necessária
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -417,43 +416,98 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         lblSemResponsavel.setText(String.valueOf(semResponsavel));
     }
 
-    // ==================== AÇÕES DE PACIENTE ====================
-
     private void visualizarPaciente(Paciente paciente) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Visualizar Paciente");
-        alert.setHeaderText("Informações de " + paciente.getNome());
+        Dialog<Void> dialog = new Dialog<>();
+        dialog.setTitle("Visualizar Paciente");
+        dialog.setHeaderText("📋 Informações de " + paciente.getNome());
 
-        StringBuilder info = new StringBuilder();
-        info.append("📋 DADOS PESSOAIS\n");
-        info.append("━━━━━━━━━━━━━━━━━━━━━━━━\n");
-        info.append("Nome: ").append(paciente.getNome()).append("\n");
-        info.append("Idade: ").append(Period.between(paciente.getDataNascimento(), LocalDate.now()).getYears()).append(" anos\n");
-        info.append("CPF: ").append(paciente.getCpf() != null ? paciente.getCpf() : "Não informado").append("\n\n");
+        GridPane grid = new GridPane();
+        grid.setHgap(15);
+        grid.setVgap(12);
+        grid.setPadding(new Insets(20));
+        grid.setStyle("-fx-background-color: white;");
 
-        info.append("🏥 INFORMAÇÕES CLÍNICAS\n");
-        info.append("━━━━━━━━━━━━━━━━━━━━━━━━\n");
-        info.append("Diagnóstico: ").append(paciente.getDiagnostico()).append("\n");
-        info.append("Escolaridade: ").append(paciente.getEscolaridade()).append("\n");
-        info.append("Condição Clínica: ").append(paciente.getCondicaoClinica()).append("\n");
+        // Estilo para labels
+        String labelStyle = "-fx-font-weight: bold; -fx-text-fill: #495057;";
+        String valueStyle = "-fx-text-fill: #212529;";
 
+        int row = 0;
+
+        // Seção: Dados Pessoais
+        Label secaoDados = new Label("DADOS PESSOAIS");
+        secaoDados.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c5aa0;");
+        grid.add(secaoDados, 0, row++, 2, 1);
+
+        Separator sep1 = new Separator();
+        grid.add(sep1, 0, row++, 2, 1);
+
+        addLabelValue(grid, row++, "Nome:", paciente.getNome(), labelStyle, valueStyle);
+        addLabelValue(grid, row++, "Idade:",
+                Period.between(paciente.getDataNascimento(), LocalDate.now()).getYears() + " anos",
+                labelStyle, valueStyle);
+        addLabelValue(grid, row++, "CPF:",
+                paciente.getCpf() != null ? paciente.getCpf() : "Não informado",
+                labelStyle, valueStyle);
+
+        row++; // Espaço
+
+        // Seção: Informações Clínicas
+        Label secaoClinica = new Label("INFORMAÇÕES CLÍNICAS");
+        secaoClinica.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #28a745;");
+        grid.add(secaoClinica, 0, row++, 2, 1);
+
+        Separator sep2 = new Separator();
+        grid.add(sep2, 0, row++, 2, 1);
+
+        addLabelValue(grid, row++, "Diagnóstico:", paciente.getDiagnostico(), labelStyle, valueStyle);
+        addLabelValue(grid, row++, "Escolaridade:", paciente.getEscolaridade(), labelStyle, valueStyle);
+        addLabelValue(grid, row++, "Condição:", paciente.getCondicaoClinica(), labelStyle, valueStyle);
+
+        row++; // Espaço
+
+        // Seção: Responsável
         if (paciente.getResponsaveisLista() != null && !paciente.getResponsaveisLista().isEmpty()) {
             Responsavel resp = paciente.getResponsaveisLista().get(0);
-            info.append("\n👤 RESPONSÁVEL\n");
-            info.append("━━━━━━━━━━━━━━━━━━━━━━━━\n");
-            info.append("Nome: ").append(resp.getNome()).append("\n");
-            info.append("Telefone: ").append(resp.getTelefone()).append("\n");
-            info.append("CPF: ").append(resp.getCpf());
+
+            Label secaoResp = new Label("RESPONSÁVEL");
+            secaoResp.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #fd7e14;");
+            grid.add(secaoResp, 0, row++, 2, 1);
+
+            Separator sep3 = new Separator();
+            grid.add(sep3, 0, row++, 2, 1);
+
+            addLabelValue(grid, row++, "Nome:", resp.getNome(), labelStyle, valueStyle);
+            addLabelValue(grid, row++, "Telefone:", resp.getTelefone(), labelStyle, valueStyle);
+            addLabelValue(grid, row++, "CPF:", resp.getCpf(), labelStyle, valueStyle);
         } else {
-            info.append("\n⚠️ ATENÇÃO\n");
-            info.append("━━━━━━━━━━━━━━━━━━━━━━━━\n");
-            info.append("Nenhum responsável associado");
+            Label avisoResp = new Label("⚠️ Nenhum responsável associado");
+            avisoResp.setStyle("-fx-text-fill: #dc3545; -fx-font-style: italic;");
+            grid.add(avisoResp, 0, row++, 2, 1);
         }
 
-        alert.setContentText(info.toString());
-        // Aumentar tamanho da caixa de diálogo
-        alert.getDialogPane().setPrefSize(480, 400);
-        alert.showAndWait();
+        ScrollPane scroll = new ScrollPane(grid);
+        scroll.setFitToWidth(true);
+        scroll.setPrefSize(500, 450);
+
+        dialog.getDialogPane().setContent(scroll);
+        dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
+        dialog.showAndWait();
+    }
+
+    // Método auxiliar
+    private void addLabelValue(GridPane grid, int row, String labelText, String valueText,
+                               String labelStyle, String valueStyle) {
+        Label label = new Label(labelText);
+        label.setStyle(labelStyle);
+        label.setMinWidth(120);
+
+        Label value = new Label(valueText);
+        value.setStyle(valueStyle);
+        value.setWrapText(true);
+        value.setMaxWidth(300);
+
+        grid.add(label, 0, row);
+        grid.add(value, 1, row);
     }
 
 
@@ -469,7 +523,8 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         confirmacao.setContentText(
                 "Deseja realmente excluir o paciente?\n\n" +
                         "Nome: " + paciente.getNome() + "\n" +
-                        "Diagnóstico: " + paciente.getDiagnostico() + "\n\n" +
+                        "Diagnóstico: " + paciente.getDiagnostico() + "\n" +
+                        "Responsável: " + paciente.getResponsaveisLista() + "\n\n" +
                         "Esta ação não pode ser desfeita."
         );
 
@@ -480,12 +535,11 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         Optional<ButtonType> resultado = confirmacao.showAndWait();
         if (resultado.isPresent() && resultado.get() == btnConfirmar) {
             try {
-                // TODO: Chamar pacienteService.excluir(paciente.getId())
-                // pacienteService.excluir(paciente.getId()); // Descomentar quando o método existir no service/DAO
+                pacienteService.deletarPaciente(paciente);
 
                 AlertUtil.showAlert(Alert.AlertType.INFORMATION,
                         "Sucesso",
-                        "Paciente excluído com sucesso! (Simulação)"); // Remover "(Simulação)" depois
+                        "Paciente excluído com sucesso!"); // Remover "(Simulação)" depois
                 carregarDados(); // Recarrega a lista
             } catch (Exception e) {
                 AlertUtil.showAlert(Alert.AlertType.ERROR,
@@ -508,18 +562,20 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
             // Se for edição, passar o paciente para o controller da tela de cadastro
             if (paciente != null) {
                 TelaCadastroPacienteController controller = fxmlLoader.getController();
-                // TODO: Criar um método no TelaCadastroPacienteController para receber e preencher o formulário
-                // controller.setPacienteParaEdicao(paciente);
+                controller.setPacienteParaEdicao(paciente);
             }
 
             Stage stage = new Stage();
             stage.setTitle(paciente == null ? "Cadastro de Pacientes" : "Editar Paciente: " + paciente.getNome());
             stage.setScene(new Scene(root));
             stage.setResizable(false);
+            if (paciente != null) {
+                Button btnSalvarTelaCadastro = (Button) root.lookup("#btnSalvar"); // Busca o botão pelo ID FXML
+                if (btnSalvarTelaCadastro != null) {
+                    btnSalvarTelaCadastro.setText("Atualizar");
+                }
+            }
             stage.showAndWait(); // Espera a tela de cadastro fechar
-
-            // Após fechar, recarrega os dados caso algo tenha mudado (novo cadastro ou edição)
-            // carregarDados(); // Removido, pois o DataChangeListener já faz isso
 
         } catch (IOException ex) {
             System.err.println("Erro ao abrir tela de cadastro: " + ex.getMessage());

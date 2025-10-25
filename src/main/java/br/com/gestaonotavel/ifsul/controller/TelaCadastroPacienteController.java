@@ -85,8 +85,8 @@ public class TelaCadastroPacienteController implements Initializable {
     private Label lblTelefoneResponsavel;
 
     private final PacienteService pacienteService;
-
     private Responsavel responsavel;
+    private Paciente pacienteEmEdicao = null;
 
     public TelaCadastroPacienteController(PacienteService pacienteService) {
         this.pacienteService = pacienteService;
@@ -101,20 +101,40 @@ public class TelaCadastroPacienteController implements Initializable {
     public void handleSalvarButtonAction(ActionEvent event) {
         try {
             validarCamposPreenchidos();
+            Paciente pacienteSalvado;
+            String mensagemAlerta;
 
-            Paciente paciente = construirPaciente();
-
-            if (this.responsavel != null) {
-                pacienteService.criarEAssociarResponsavel(this.responsavel, paciente);
+            if(pacienteEmEdicao == null){
+                Paciente paciente = new Paciente();
+                pacienteSalvado = construirPaciente(paciente);
+                mensagemAlerta = "Paciente salvo com sucesso!";
+                if (this.responsavel != null) {
+                    pacienteService.criarEAssociarResponsavel(this.responsavel, pacienteSalvado);
+                }else{
+                    pacienteService.salvarPaciente(pacienteSalvado);
+                }
             }else{
-                pacienteService.salvarPaciente(paciente);
-            }
+                pacienteSalvado = pacienteEmEdicao;
+                popularPaciente(pacienteEmEdicao);
+                mensagemAlerta = "Paciente atualizado com sucesso!";
 
+                pacienteSalvado.getResponsaveisLista().clear();
+                if (this.responsavel != null) {
+                    // ...adiciona ele à lista.
+                    pacienteSalvado.getResponsaveisLista().add(this.responsavel);
+                }
+
+                pacienteService.salvarPaciente(pacienteSalvado);
+            }
             AlertUtil.showAlert(Alert.AlertType.INFORMATION,
                     "Sucesso",
-                    "Paciente salvo com sucesso!");
+                    mensagemAlerta);
 
-            limparFormulario();
+            if (pacienteEmEdicao == null) {
+                limparFormulario();
+            }else{
+                handleCancelarButtonAction(event);
+            }
 
         } catch (RegraDeNegocioException e) {
             AlertUtil.showAlert(Alert.AlertType.ERROR,
@@ -166,7 +186,7 @@ public class TelaCadastroPacienteController implements Initializable {
             TelaCadastroResponsavelController telaCadastroResponsavelController = fxmlLoader.getController();
             this.responsavel = telaCadastroResponsavelController.getResponsavel();
             if(this.responsavel != null){
-                preencherFormulariorResponsavel(this.responsavel);
+                preencherFormularioResponsavel(this.responsavel);
             }
         }catch (IOException ex){
             System.out.println(ex.getMessage());
@@ -212,20 +232,21 @@ public class TelaCadastroPacienteController implements Initializable {
         }
     }
 
-    private Paciente construirPaciente() {
-        Paciente paciente = new Paciente();
+    private Paciente construirPaciente(Paciente paciente) {
+        popularPaciente(paciente);
+        return paciente;
+    }
 
+    private void popularPaciente(Paciente paciente) {
         paciente.setNome(txtNomePaciente.getText().trim());
         paciente.setCpf(txtCpf.getText().trim().isEmpty() ? null : txtCpf.getText().trim());
         paciente.setDataNascimento(datePickerDataNascimento.getValue());
         paciente.setDiagnostico(txtDiagnostico.getText().trim());
         paciente.setEscolaridade(cbxEscolaridade.getValue());
         paciente.setCondicaoClinica(txtCondicaoClinica.getText().trim());
-
-        return paciente;
     }
 
-    private void preencherFormulariorResponsavel(Responsavel responsavel) {
+    private void preencherFormularioResponsavel(Responsavel responsavel) {
         lblNomeResponsavel.setText(responsavel.getNome());
         lblCpfResponsavel.setText(responsavel.getCpf());
         lblTelefoneResponsavel.setText(responsavel.getTelefone());
@@ -261,6 +282,34 @@ public class TelaCadastroPacienteController implements Initializable {
                 "Ensino superior incompleto",
                 "Ensino superior completo"
         );
+
+    }
+
+    public void setPacienteParaEdicao(Paciente paciente) {
+        this.pacienteEmEdicao = paciente;
+        // Preenche os campos do formulário com os dados do paciente
+        txtNomePaciente.setText(paciente.getNome());
+        // Verifica se o CPF não é nulo antes de tentar preencher
+        if (paciente.getCpf() != null) {
+            txtCpf.setText(paciente.getCpf());
+        } else {
+            txtCpf.clear(); // Limpa o campo se o paciente não tiver CPF
+        }
+        datePickerDataNascimento.setValue(paciente.getDataNascimento());
+        txtDiagnostico.setText(paciente.getDiagnostico());
+        cbxEscolaridade.setValue(paciente.getEscolaridade()); // O ComboBox deve ter os mesmos valores que foram usados para salvar
+        txtCondicaoClinica.setText(paciente.getCondicaoClinica());
+
+        // Preenche os dados do responsável, se houver
+        if (paciente.getResponsaveisLista() != null && !paciente.getResponsaveisLista().isEmpty()) {
+            // Assume que estamos interessados no primeiro responsável da lista
+            Responsavel responsavelDoPaciente = paciente.getResponsaveisLista().get(0);
+            this.responsavel = responsavelDoPaciente; // Guarda a referência do responsável atual
+            preencherFormularioResponsavel(responsavelDoPaciente);
+        } else {
+            // Garante que a área do responsável fique vazia se não houver um associado
+            handleRemoverResponsavelButtonAction(null); // Reutiliza a lógica para limpar a área do responsável
+        }
 
     }
 }
