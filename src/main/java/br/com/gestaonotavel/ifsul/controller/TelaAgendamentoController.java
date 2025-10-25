@@ -10,17 +10,16 @@ import br.com.gestaonotavel.ifsul.service.PacienteService;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
 import javafx.collections.FXCollections;
-import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
@@ -86,6 +85,7 @@ public class TelaAgendamentoController implements Initializable {
     // --- Métodos handle para os botões
     @FXML
     private void handleSalvarButtonAction(ActionEvent event) {
+        try {
         Paciente paciente =  cbxPaciente.getSelectionModel().getSelectedItem();
         Especialista especialista =  cbxEspecialista.getSelectionModel().getSelectedItem();
         Integer horaData =  cbxHora.getSelectionModel().getSelectedItem();
@@ -94,9 +94,9 @@ public class TelaAgendamentoController implements Initializable {
         String local = txtLocal.getText();
         String observacao = txtObservacao.getText();
 
-        LocalDateTime dataHoraCompleta = dataPaciente.atTime(horaData, minutoData);
+            validarCampos(paciente, especialista, horaData, minutoData, dataPaciente, local);
 
-        validarCampos(paciente, especialista, horaData, minutoData, dataPaciente, local);
+        LocalDateTime dataHoraCompleta = dataPaciente.atTime(horaData, minutoData);
 
         Atendimento atendimento = new Atendimento();
         atendimento.setPaciente(paciente);
@@ -105,7 +105,7 @@ public class TelaAgendamentoController implements Initializable {
         atendimento.setLocal(local);
         atendimento.setObservacao(observacao);
 
-        try {
+
             atendimentoService.salvar(atendimento);
             AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Sucesso!", "Atendimento criado!");
             limparFormulario();

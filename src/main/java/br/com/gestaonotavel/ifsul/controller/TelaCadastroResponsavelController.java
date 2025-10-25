@@ -101,10 +101,10 @@ public class TelaCadastroResponsavelController implements Initializable {
             throw new RegraDeNegocioException("Preencha a data de nascimento");
         }
         if (txtTelefone.getText() == null || txtTelefone.getText().trim().isEmpty()) {
-            throw new RegraDeNegocioException("Preencha o diagnóstico");
+            throw new RegraDeNegocioException("Preencha o telefone do responsável");
         }
         if (txtCpf.getText() == null || txtCpf.getText().isEmpty()) {
-            throw new RegraDeNegocioException("Selecione a escolaridade");
+            throw new RegraDeNegocioException("Preencha o CPF do responsável");
         }
     }
 
