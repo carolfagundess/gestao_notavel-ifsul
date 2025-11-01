@@ -6,6 +6,7 @@ import br.com.gestaonotavel.ifsul.util.JpaUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 public class ResponsavelDAO {
@@ -18,7 +19,7 @@ public class ResponsavelDAO {
             Responsavel responsavelSalvo = em.merge(responsavelSalvando);
             tx.commit();
             return responsavelSalvo;
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             tx.rollback();
             throw e;
         } finally {
@@ -30,8 +31,7 @@ public class ResponsavelDAO {
         EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.find(Responsavel.class, idResponsavel);
-
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             throw e;
         } finally {
             em.close();
@@ -42,7 +42,7 @@ public class ResponsavelDAO {
         EntityManager em = JpaUtil.getEntityManager();
         try {
              return em.createQuery("SELECT r FROM Responsavel r", Responsavel.class).getResultList();
-        }catch (Exception e) {
+        }catch (PersistenceException e) {
             throw e;
         }finally {
             em.close();
@@ -59,7 +59,7 @@ public class ResponsavelDAO {
                 em.remove(responsavel);
                 tx.commit();
             }
-        }catch (Exception e) {
+        }catch (PersistenceException e) {
             tx.rollback();
             throw e;
         }finally {

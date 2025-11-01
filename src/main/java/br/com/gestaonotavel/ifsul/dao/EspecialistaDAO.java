@@ -6,6 +6,7 @@ import br.com.gestaonotavel.ifsul.util.JpaUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 public class EspecialistaDAO {
@@ -18,7 +19,7 @@ public class EspecialistaDAO {
             Especialista especialistaSalvo = em.merge(especialista);
             tx.commit();
             return especialistaSalvo;
-        } catch (Exception ex) {
+        } catch (PersistenceException ex) {
             tx.rollback();
             throw ex;
         } finally {
@@ -56,7 +57,7 @@ public class EspecialistaDAO {
                 em.remove(especialista);
             }
             tx.commit();
-        } catch (Exception ex) {
+        } catch (PersistenceException ex) {
             if (tx.isActive()) {
                 tx.rollback();
             }

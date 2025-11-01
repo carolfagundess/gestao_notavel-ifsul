@@ -6,6 +6,7 @@ import br.com.gestaonotavel.ifsul.util.JpaUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.util.List;
 
 public class PacienteDAO {
@@ -20,7 +21,7 @@ public class PacienteDAO {
             Paciente pacienteSalvo = em.merge(paciente);
             tx.commit();
             return pacienteSalvo;
-        } catch (Exception ex) {
+        } catch (PersistenceException ex) {
             tx.rollback();
             throw ex;
         } finally {
@@ -41,7 +42,7 @@ public class PacienteDAO {
         EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.createQuery("SELECT DISTINCT p FROM Paciente p LEFT JOIN FETCH p.responsaveisLista", Paciente.class).getResultList();
-        } catch (Exception ex) {
+        } catch (PersistenceException ex) {
             throw ex;
         } finally {
             em.close();
@@ -58,7 +59,7 @@ public class PacienteDAO {
                 em.remove(paciente);
             }
             tx.commit();
-        } catch (Exception ex) {
+        } catch (PersistenceException ex) {
             if (tx.isActive()) {
                 tx.rollback();
             }

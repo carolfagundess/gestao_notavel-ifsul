@@ -17,6 +17,9 @@ public class ServiceFactory {
     private final EspecialistaService especialistaService;
     private final AtendimentoService atendimentoService;
     private final ResponsavelService responsavelService;
+    private final MovimentacaoFinanceiraService movimentacaoFinanceiraService;
+    private final AtividadeService atividadeService;
+    private final RelatorioService relatorioService;
     // Adicione outros serviços aqui conforme eles forem criados...
 
     /**
@@ -28,8 +31,9 @@ public class ServiceFactory {
         this.especialistaService = new EspecialistaService();
         this.atendimentoService = new AtendimentoService();
         this.responsavelService = new ResponsavelService();
-        // Nota: Se seus serviços precisarem de DAOs, você os instanciaria aqui também.
-        // Ex: this.pacienteService = new PacienteService(new PacienteDAO());
+        this.movimentacaoFinanceiraService = new MovimentacaoFinanceiraService();
+        this.atividadeService = new AtividadeService();
+        this.relatorioService = new RelatorioService();
     }
 
     /**
@@ -62,4 +66,10 @@ public class ServiceFactory {
     public ResponsavelService getResponsavelService() {
         return responsavelService;
     }
+
+    public MovimentacaoFinanceiraService getMovimentacaoFinanceiraService() {return movimentacaoFinanceiraService;}
+
+    public AtividadeService getAtividadeService() {return atividadeService;}
+
+    public RelatorioService getRelatorioService() {return relatorioService;}
 }

@@ -108,6 +108,11 @@ public class Responsavel implements Serializable {
     public void setPacientesLista(List<Paciente> pacientesLista) {
         this.pacientesLista = pacientesLista;
     }
+
+    public void adicionarResponsavel(Paciente paciente){
+        this.pacientesLista.add(paciente);
+        paciente.getResponsaveisLista().add(this);
+    }
     
     @Override
     public boolean equals(Object o) {

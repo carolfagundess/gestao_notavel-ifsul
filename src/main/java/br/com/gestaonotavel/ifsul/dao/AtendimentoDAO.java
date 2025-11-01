@@ -6,6 +6,7 @@ import br.com.gestaonotavel.ifsul.util.JpaUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class AtendimentoDAO {
             Atendimento atendimentoSalvo = em.merge(atendimento);
             tx.commit();
             return atendimentoSalvo;
-        }catch (Exception e){
+        }catch (PersistenceException e){
             tx.rollback();
             throw e;
         }finally {

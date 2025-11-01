@@ -5,6 +5,7 @@ import br.com.gestaonotavel.ifsul.util.JpaUtil;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceException;
 
 public class TipoAtividadeDAO {
 
@@ -16,7 +17,7 @@ public class TipoAtividadeDAO {
             TipoAtividade tipoAtividadeSalvo = em.merge(tipoAtividade);
             tx.commit();
             return tipoAtividadeSalvo;
-        } catch (Exception e) {
+        } catch (PersistenceException e) {
             tx.rollback();
             throw e;
         } finally {
