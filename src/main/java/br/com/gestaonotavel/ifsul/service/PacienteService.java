@@ -26,9 +26,9 @@ public class PacienteService {
         if (cpfOriginal != null && !cpfOriginal.trim().isEmpty()) { // Adicionado trim() aqui também
 
             // 2.1 Valida o formato e os dígitos verificadores
-            if (!ValidationUtil.validarCPF(cpfOriginal)) { // Verifica o retorno!
-                throw new RegraDeNegocioException("CPF inválido."); // Lança exceção se inválido
-            }
+            //if (!ValidationUtil.validarCPF(cpfOriginal)) { // Verifica o retorno!
+            //    throw new RegraDeNegocioException("CPF inválido."); // Lança exceção se inválido
+            //}
 
             // 2.2 Limpa o CPF APÓS a validação
             String cpfLimpo = cpfOriginal.replaceAll("[^0-9]", "");

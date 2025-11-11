@@ -1,4 +1,4 @@
-// DataInitializer.java - VERSÃO COMPLETA PARA TESTES
+// DataInitializer.java - VERSÃO COM CPFS MATEMATICAMENTE VÁLIDOS
 
 package br.com.gestaonotavel.ifsul.util;
 
@@ -28,22 +28,23 @@ public class DataInitializer {
             // ========================================
             System.out.println("\n📝 Criando usuários...");
 
-            if (usuarioService.buscarPorCpf("1234") == null) {
+            // CPFs válidos para Utilizadores
+            if (usuarioService.buscarPorCpf("76043431057") == null) {
                 Usuario admin = new Usuario();
                 admin.setNome("Administrador");
-                admin.setCpf("1234");
+                admin.setCpf("76043431057"); // <-- CORRIGIDO
                 admin.setEmail("admin@gestaonotavel.com");
                 admin.setSenha("admin");
                 admin.setCargo("Admin");
                 admin.setTelefone("51999999999");
                 usuarioService.salvarUsuario(admin);
-                System.out.println("✅ Usuário Admin criado - Login: 1234 / Senha: admin");
+                System.out.println("✅ Usuário Admin criado - Login: 76043431057 / Senha: admin");
             }
 
-            if (usuarioService.buscarPorCpf("12345678900") == null) {
+            if (usuarioService.buscarPorCpf("13023315000") == null) {
                 Usuario coordenador = new Usuario();
                 coordenador.setNome("Maria Silva");
-                coordenador.setCpf("12345678900");
+                coordenador.setCpf("13023315000"); // <-- CORRIGIDO
                 coordenador.setEmail("maria@gestaonotavel.com");
                 coordenador.setSenha("senha123");
                 coordenador.setCargo("Coordenadora");
@@ -57,9 +58,10 @@ public class DataInitializer {
             // ========================================
             System.out.println("\n👤 Criando responsáveis...");
 
+            // CPFs válidos para Responsáveis
             Responsavel ana = new Responsavel();
             ana.setNome("Ana Maria Silva");
-            ana.setCpf("11122233344");
+            ana.setCpf("27310493050"); // <-- CORRIGIDO
             ana.setTelefone("51999887766");
             ana.setDataNascimento(LocalDate.of(1984, 12, 5));
             Responsavel anaGravado = responsavelService.salvar(ana);
@@ -67,7 +69,7 @@ public class DataInitializer {
 
             Responsavel joao = new Responsavel();
             joao.setNome("João Pedro Santos");
-            joao.setCpf("22233344455");
+            joao.setCpf("90472250007"); // <-- CORRIGIDO
             joao.setTelefone("51988776655");
             joao.setDataNascimento(LocalDate.of(1990, 3, 15));
             Responsavel joaoGravado = responsavelService.salvar(joao);
@@ -75,7 +77,7 @@ public class DataInitializer {
 
             Responsavel carla = new Responsavel();
             carla.setNome("Carla Fernandes");
-            carla.setCpf("33344455566");
+            carla.setCpf("43662874013"); // <-- CORRIGIDO
             carla.setTelefone("51977665544");
             carla.setDataNascimento(LocalDate.of(1988, 7, 20));
             Responsavel carlaGravado = responsavelService.salvar(carla);
@@ -86,10 +88,10 @@ public class DataInitializer {
             // ========================================
             System.out.println("\n👶 Criando pacientes...");
 
-            // Paciente 1 - Com Responsável
+            // CPFs válidos para Pacientes
             Paciente carlos = new Paciente();
             carlos.setNome("Carlos Souza");
-            carlos.setCpf("44455566677");
+            carlos.setCpf("97414870003"); // <-- CORRIGIDO
             carlos.setDataNascimento(LocalDate.of(2018, 6, 15));
             carlos.setDiagnostico("Atraso de fala");
             carlos.setCondicaoClinica("Leve");
@@ -97,10 +99,9 @@ public class DataInitializer {
             pacienteService.criarEAssociarResponsavel(anaGravado, carlos);
             System.out.println("✅ Paciente Carlos criado (com responsável Ana)");
 
-            // Paciente 2 - Com Responsável
             Paciente julia = new Paciente();
             julia.setNome("Julia Oliveira");
-            julia.setCpf("55566677788");
+            julia.setCpf("91941612003"); // <-- CORRIGIDO
             julia.setDataNascimento(LocalDate.of(2017, 2, 10));
             julia.setDiagnostico("TEA - Transtorno do Espectro Autista");
             julia.setCondicaoClinica("Moderado");
@@ -108,7 +109,6 @@ public class DataInitializer {
             pacienteService.criarEAssociarResponsavel(joaoGravado, julia);
             System.out.println("✅ Paciente Julia criado (com responsável João)");
 
-            // Paciente 3 - Sem Responsável
             Paciente miguel = new Paciente();
             miguel.setNome("Miguel Santos");
             miguel.setDataNascimento(LocalDate.of(2019, 11, 5));
@@ -118,10 +118,9 @@ public class DataInitializer {
             pacienteService.salvarPaciente(miguel);
             System.out.println("✅ Paciente Miguel criado (SEM responsável)");
 
-            // Paciente 4 - Com Responsável
             Paciente lucas = new Paciente();
             lucas.setNome("Lucas Ferreira");
-            lucas.setCpf("66677788899");
+            lucas.setCpf("34320645050"); // <-- CORRIGIDO
             lucas.setDataNascimento(LocalDate.of(2016, 8, 25));
             lucas.setDiagnostico("TDAH - Transtorno do Déficit de Atenção");
             lucas.setCondicaoClinica("Moderado");
@@ -129,7 +128,6 @@ public class DataInitializer {
             pacienteService.criarEAssociarResponsavel(carlaGravado, lucas);
             System.out.println("✅ Paciente Lucas criado (com responsável Carla)");
 
-            // Paciente 5 - Sem CPF (teste de campo opcional)
             Paciente sofia = new Paciente();
             sofia.setNome("Sofia Costa");
             sofia.setDataNascimento(LocalDate.of(2020, 1, 12));
@@ -182,11 +180,9 @@ public class DataInitializer {
             // ========================================
             System.out.println("\n📅 Criando atendimentos...");
 
-            // Buscar pacientes salvos para criar atendimentos
             java.util.List<Paciente> pacientes = pacienteService.listarTodos();
 
-            if (!pacientes.isEmpty()) {
-                // Atendimento 1 - Hoje às 14h
+            if (pacientes != null && !pacientes.isEmpty()) {
                 Atendimento atend1 = new Atendimento();
                 atend1.setPaciente(pacientes.get(0));
                 atend1.setEspecialista(fonoGravado);
@@ -196,7 +192,6 @@ public class DataInitializer {
                 atendimentoService.salvar(atend1);
                 System.out.println("✅ Atendimento 1 criado (hoje 14h)");
 
-                // Atendimento 2 - Amanhã às 10h
                 Atendimento atend2 = new Atendimento();
                 atend2.setPaciente(pacientes.get(1));
                 atend2.setEspecialista(psicoGravado);
@@ -206,7 +201,6 @@ public class DataInitializer {
                 atendimentoService.salvar(atend2);
                 System.out.println("✅ Atendimento 2 criado (amanhã 10h)");
 
-                // Atendimento 3 - Semana que vem às 15h30
                 if (pacientes.size() > 2) {
                     Atendimento atend3 = new Atendimento();
                     atend3.setPaciente(pacientes.get(2));

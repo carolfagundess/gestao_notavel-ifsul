@@ -6,6 +6,7 @@ import br.com.gestaonotavel.ifsul.util.JpaUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import java.util.List;
 
 public class TipoAtividadeDAO {
 
@@ -23,6 +24,18 @@ public class TipoAtividadeDAO {
         } finally {
             em.close();
         }
+    }
 
+    public List<TipoAtividade> listarTodos() {
+        EntityManager em = JpaUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        try {
+            return em.createQuery("SELECT t FROM TipoAtividade t", TipoAtividade.class).getResultList();
+        }catch(PersistenceException e){
+            throw e;
+        }finally {
+            em.close();
+        }
     }
 }

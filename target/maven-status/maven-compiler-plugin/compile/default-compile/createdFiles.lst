@@ -11,6 +11,9 @@ br\com\gestaonotavel\ifsul\controller\TelaPrincipalController.class
 br\com\gestaonotavel\ifsul\controller\TelaAgendamentoController$2.class
 br\com\gestaonotavel\ifsul\controller\TelaCadastroResponsavelController.class
 br\com\gestaonotavel\ifsul\dao\EspecialistaDAO.class
+br\com\gestaonotavel\ifsul\util\ValidationUtil.class
+br\com\gestaonotavel\ifsul\service\MovimentacaoFinanceiraService.class
+br\com\gestaonotavel\ifsul\service\RelatorioService.class
 br\com\gestaonotavel\ifsul\controller\TelaCadastroPacienteController.class
 br\com\gestaonotavel\ifsul\dao\AtividadeDAO.class
 br\com\gestaonotavel\ifsul\service\AtividadeService.class
@@ -28,6 +31,7 @@ br\com\gestaonotavel\ifsul\util\DataInitializer.class
 br\com\gestaonotavel\ifsul\model\Responsavel.class
 br\com\gestaonotavel\ifsul\model\TipoAtividade.class
 br\com\gestaonotavel\ifsul\controller\TelaLoginController.class
+br\com\gestaonotavel\ifsul\service\factory\ServiceFactory.class
 br\com\gestaonotavel\ifsul\dao\TipoAtividadeDAO.class
 br\com\gestaonotavel\ifsul\controller\TelaPrincipalController$1.class
 br\com\gestaonotavel\ifsul\util\RegraDeNegocioException.class

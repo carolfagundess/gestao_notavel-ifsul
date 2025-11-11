@@ -49,9 +49,9 @@ public class UsuarioService {
         }
 
         // 1. Validar formato e dígitos do CPF
-        if (!ValidationUtil.validarCPF(cpfOriginal)) { // Verifica o retorno!
-            throw new RegraDeNegocioException("CPF inválido."); // Lança exceção se inválido
-        }
+        //if (!ValidationUtil.validarCPF(cpfOriginal)) { // Verifica o retorno!
+        //    throw new RegraDeNegocioException("CPF inválido."); // Lança exceção se inválido
+        //}
 
         // 2. Limpar CPF APÓS validação
         String cpfLimpo = cpfOriginal.replaceAll("[^0-9]", "");

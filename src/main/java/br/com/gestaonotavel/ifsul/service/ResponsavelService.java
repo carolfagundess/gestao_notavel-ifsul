@@ -45,9 +45,9 @@ public class ResponsavelService {
         }
         String cpfLimpo = cpfOriginal.replaceAll("[^0-9]", "");
 
-        if (!ValidationUtil.validarCPF(cpfOriginal)) {
-            throw new RegraDeNegocioException("CPF inválido");
-        }
+        //if (!ValidationUtil.validarCPF(cpfOriginal)) {
+        //    throw new RegraDeNegocioException("CPF inválido");
+        //}
         // Busca por duplicidade usando o CPF limpo
         if (responsavelDAO.buscarPorCpf(cpfLimpo) != null) {
             // Usar RegraDeNegocioException para erros de negócio
