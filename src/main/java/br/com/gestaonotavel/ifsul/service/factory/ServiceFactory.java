@@ -20,6 +20,7 @@ public class ServiceFactory {
     private final MovimentacaoFinanceiraService movimentacaoFinanceiraService;
     private final AtividadeService atividadeService;
     private final RelatorioService relatorioService;
+    private final AuditoriaLogService auditoriaLogService;
     // Adicione outros serviços aqui conforme eles forem criados...
 
     /**
@@ -34,6 +35,7 @@ public class ServiceFactory {
         this.movimentacaoFinanceiraService = new MovimentacaoFinanceiraService();
         this.atividadeService = new AtividadeService();
         this.relatorioService = new RelatorioService();
+        this.auditoriaLogService = new AuditoriaLogService();
     }
 
     /**
@@ -72,4 +74,7 @@ public class ServiceFactory {
     public AtividadeService getAtividadeService() {return atividadeService;}
 
     public RelatorioService getRelatorioService() {return relatorioService;}
+    public AuditoriaLogService getAuditoriaLogService() {
+        return auditoriaLogService;
+    }
 }

@@ -9,6 +9,7 @@ import br.com.gestaonotavel.ifsul.service.UsuarioService;
 import br.com.gestaonotavel.ifsul.service.factory.ServiceFactory;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
+import br.com.gestaonotavel.ifsul.util.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -59,6 +60,8 @@ public class TelaLoginController implements Initializable {
 
             Usuario usuario = usuarioService.autenticarUsuario(cpf, senha);
 
+            SessionManager.getInstance().iniciarSessao(usuario);
+
             System.out.println("Login bem-sucedido! Bem-vindo, " + usuario.getNome());
             abrirTelaPrincipal();
         }catch (RegraDeNegocioException erro){
@@ -73,9 +76,14 @@ public class TelaLoginController implements Initializable {
 
             // Carrega o FXML da nova tela
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TelaPrincipal.fxml"));
-            loader.setControllerFactory(TelaPrincipalController -> {
-                return new TelaPrincipalController(serviceFactory.getPacienteService());
-            });
+
+            loader.setControllerFactory(controller ->
+                    new TelaPrincipalController(
+                            serviceFactory.getPacienteService(),
+                            serviceFactory.getAuditoriaLogService() // Novo serviço adicionado
+                    )
+            );
+
             Parent root = loader.load();
 
             // Cria um novo palco (Stage), que é uma nova janela

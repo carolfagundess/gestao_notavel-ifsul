@@ -34,7 +34,7 @@ public class DataInitializer {
                 admin.setCpf("1234");
                 admin.setEmail("admin@gestaonotavel.com");
                 admin.setSenha("admin");
-                admin.setCargo("Admin");
+                admin.setRole(Role.ADMIN);
                 admin.setTelefone("51999999999");
                 usuarioService.salvarUsuario(admin);
                 System.out.println("✅ Usuário Admin criado - Login: 1234 / Senha: admin");
@@ -46,7 +46,7 @@ public class DataInitializer {
                 coordenador.setCpf("12345678900");
                 coordenador.setEmail("maria@gestaonotavel.com");
                 coordenador.setSenha("senha123");
-                coordenador.setCargo("Coordenadora");
+                coordenador.setRole(Role.SECRETARIO);
                 coordenador.setTelefone("51988887777");
                 usuarioService.salvarUsuario(coordenador);
                 System.out.println("✅ Usuário Coordenador criado");
@@ -226,7 +226,7 @@ public class DataInitializer {
             System.out.println("✅ BANCO DE DADOS POPULADO COM SUCESSO!");
             System.out.println("========================================");
             System.out.println("📊 Resumo:");
-            System.out.println("   • 2 Usuários");
+            System.out.println("   • 2 Usuários (com Roles)"); // Alterado
             System.out.println("   • 3 Responsáveis");
             System.out.println("   • 5 Pacientes (3 com responsável, 2 sem)");
             System.out.println("   • 3 Especialistas");

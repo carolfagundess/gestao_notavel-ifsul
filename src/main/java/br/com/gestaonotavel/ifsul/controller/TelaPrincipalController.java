@@ -1,12 +1,15 @@
 package br.com.gestaonotavel.ifsul.controller;
 
 import br.com.gestaonotavel.ifsul.model.Paciente;
+import br.com.gestaonotavel.ifsul.model.Permission;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
+import br.com.gestaonotavel.ifsul.service.AuditoriaLogService;
 import br.com.gestaonotavel.ifsul.service.PacienteService;
 import br.com.gestaonotavel.ifsul.service.factory.ServiceFactory;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.DataChangeListener;
 import br.com.gestaonotavel.ifsul.util.DataChangeManager;
+import br.com.gestaonotavel.ifsul.util.SessionManager; // <-- IMPORT ADICIONADO
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -84,6 +87,7 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
 
     // ==================== SERVIÇOS E LISTAS ====================
     final PacienteService pacienteService;
+    final AuditoriaLogService auditoriaLogService;
     private ObservableList<Paciente> listaPacientes;
     private ObservableList<Paciente> listaFiltrada;
 
@@ -92,8 +96,10 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     private ChangeListener<String> filtroStatusChangeListener;
     private ChangeListener<String> filtroResponsavelChangeListener;
 
-    public TelaPrincipalController(PacienteService pacienteService) {
+    public TelaPrincipalController(PacienteService pacienteService, AuditoriaLogService auditoriaLogService) {
+
         this.pacienteService = pacienteService;
+        this.auditoriaLogService = auditoriaLogService;
     }
 
     @FXML
@@ -142,6 +148,36 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
 
         // Garantir que a tabela atualize com os filtros limpos
         aplicarFiltros();
+    }
+
+    private void handleSairButtonAction(ActionEvent event) {
+        // 1. Encerrar a sessão global
+        SessionManager.getInstance().encerrarSessao();
+
+        // 2. Fechar a janela principal
+        Stage stagePrincipal = (Stage) pacientesTableView.getScene().getWindow();
+        stagePrincipal.close();
+
+        // 3. Abrir a tela de login
+        try {
+            ServiceFactory serviceFactory = ServiceFactory.getInstance();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TelaLogin.fxml"));
+
+            // Configura o factory para criar o controller de login
+            loader.setControllerFactory(controller ->
+                    new TelaLoginController(serviceFactory.getUsuarioService())
+            );
+
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Gestão Notável - Login");
+            loginStage.setScene(new Scene(root));
+            loginStage.setResizable(false);
+            loginStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro Crítico", "Não foi possível reabrir a tela de login.");
+        }
     }
 
     // ==================== INITIALIZE ====================
@@ -226,7 +262,11 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         });
     }
 
+    // --- MÉTODO MODIFICADO ---
     private void configurarColunaAcoes() {
+        // [TASK-012] Pega a sessão atual
+        SessionManager session = SessionManager.getInstance();
+
         colunaAcoes.setCellFactory(param -> new TableCell<Paciente, Void>() {
             private final Button btnVisualizar = criarBotaoAcao("👁", "#2196F3", "Visualizar");
             private final Button btnEditar = criarBotaoAcao("✏", "#FF9800", "Editar");
@@ -235,6 +275,11 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
 
             {
                 container.setAlignment(Pos.CENTER);
+
+                // --- [TASK-012] Desabilita botões com base na permissão ---
+                btnEditar.setDisable(!session.hasPermission(Permission.EDITAR_PACIENTE));
+                btnExcluir.setDisable(!session.hasPermission(Permission.EXCLUIR_PACIENTE));
+                // ---------------------------------------------------------
 
                 btnVisualizar.setOnAction(event -> {
                     Paciente paciente = getTableView().getItems().get(getIndex());
@@ -248,7 +293,7 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
 
                 btnExcluir.setOnAction(event -> {
                     Paciente paciente = getTableView().getItems().get(getIndex());
-                    excluirPaciente(paciente);
+                    excluirPaciente(paciente); // Este método agora tem a dupla confirmação
                 });
             }
 
@@ -516,35 +561,56 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         abrirTelaCadastro(paciente); // Reutiliza a tela de cadastro para edição
     }
 
+    // --- MÉTODO MODIFICADO ---
     private void excluirPaciente(Paciente paciente) {
+        // [TASK-014] Etapa 1: Confirmação Simples
         Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION);
         confirmacao.setTitle("Confirmar Exclusão");
-        confirmacao.setHeaderText("⚠️ Atenção!");
-        confirmacao.setContentText(
-                "Deseja realmente excluir o paciente?\n\n" +
-                        "Nome: " + paciente.getNome() + "\n" +
-                        "Diagnóstico: " + paciente.getDiagnostico() + "\n" +
-                        "Responsável: " + paciente.getResponsaveisLista() + "\n\n" +
-                        "Esta ação não pode ser desfeita."
-        );
+        confirmacao.setHeaderText("⚠️ Atenção! Esta ação é irreversível.");
+        confirmacao.setContentText("Deseja realmente excluir o paciente: " + paciente.getNome() + "?");
 
         ButtonType btnConfirmar = new ButtonType("Excluir", ButtonBar.ButtonData.OK_DONE);
         ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
         confirmacao.getButtonTypes().setAll(btnConfirmar, btnCancelar);
 
         Optional<ButtonType> resultado = confirmacao.showAndWait();
-        if (resultado.isPresent() && resultado.get() == btnConfirmar) {
-            try {
-                pacienteService.deletarPaciente(paciente);
 
-                AlertUtil.showAlert(Alert.AlertType.INFORMATION,
-                        "Sucesso",
-                        "Paciente excluído com sucesso!"); // Remover "(Simulação)" depois
-                carregarDados(); // Recarrega a lista
-            } catch (Exception e) {
-                AlertUtil.showAlert(Alert.AlertType.ERROR,
-                        "Erro",
-                        "Erro ao excluir paciente: " + e.getMessage());
+        // Se clicou em "Excluir", pede a segunda confirmação
+        if (resultado.isPresent() && resultado.get() == btnConfirmar) {
+
+            // [TASK-014] Etapa 2: Confirmação por Texto
+            TextInputDialog dialogSeguranca = new TextInputDialog();
+            dialogSeguranca.setTitle("Confirmação de Segurança");
+            dialogSeguranca.setHeaderText("Para confirmar a exclusão, digite EXCLUIR no campo abaixo.");
+            dialogSeguranca.setContentText("Digite:");
+
+            Optional<String> resultadoTexto = dialogSeguranca.showAndWait();
+
+            // Verifica se o texto digitado é "EXCLUIR"
+            if (resultadoTexto.isPresent() && resultadoTexto.get().equals("EXCLUIR")) {
+                try {
+                    // Tenta excluir o paciente
+                    pacienteService.deletarPaciente(paciente);
+
+                    // [TASK-015] Registra no log de auditoria
+                    String logAcao = String.format("Excluiu o paciente ID: %d, Nome: %s", paciente.getId(), paciente.getNome());
+                    auditoriaLogService.registrarAcao(logAcao);
+
+                    AlertUtil.showAlert(Alert.AlertType.INFORMATION,
+                            "Sucesso",
+                            "Paciente excluído com sucesso!");
+                    carregarDados(); // Recarrega a lista
+                } catch (Exception e) {
+                    AlertUtil.showAlert(Alert.AlertType.ERROR,
+                            "Erro",
+                            "Erro ao excluir paciente: " + e.getMessage());
+                }
+            } else if (resultadoTexto.isPresent()) {
+                // Digitou o texto errado
+                AlertUtil.showAlert(Alert.AlertType.WARNING, "Cancelado", "Texto de confirmação incorreto. A exclusão foi cancelada.");
+            } else {
+                // Clicou em "Cancelar" no TextInputDialog
+                AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Cancelado", "A exclusão foi cancelada.");
             }
         }
     }

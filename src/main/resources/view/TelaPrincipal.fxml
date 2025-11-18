@@ -9,7 +9,6 @@
 
 <BorderPane prefHeight="768.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gestaonotavel.ifsul.controller.TelaPrincipalController">
 
-    <!-- TOPO - Header com título e ações rápidas -->
     <top>
         <VBox style="-fx-background-color: linear-gradient(to right, #667eea, #764ba2); -fx-padding: 20;">
             <children>
@@ -28,8 +27,10 @@
                                         text="Relatórios"/>
                                 <Button style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;"
                                         text="Configurações"/>
-                                <Button style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;"
-                                        text="Perfil"/>
+
+                                <Button fx:id="btnSair" onAction="#handleSairButtonAction"
+                                        style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-weight: bold;"
+                                        text="Sair"/>
                             </children>
                         </HBox>
                     </children>
@@ -38,7 +39,6 @@
                     </padding>
                 </HBox>
 
-                <!-- Barra de busca e filtros -->
                 <HBox alignment="CENTER_LEFT" spacing="15.0" style="-fx-padding: 10 20 0 20;">
                     <children>
                         <TextField fx:id="txtBuscar" prefHeight="40.0" prefWidth="400.0"
@@ -62,12 +62,10 @@
         </VBox>
     </top>
 
-    <!-- CENTRO - Conteúdo Principal -->
     <center>
         <HBox prefHeight="720.0" prefWidth="1366.0" spacing="0.0">
             <children>
 
-                <!-- MENU LATERAL -->
                 <VBox prefWidth="91.0" spacing="10.0"
                       style="-fx-background-color: #ECEFF1; -fx-padding: 15; -fx-border-color: #BDBDBD; -fx-border-width: 0 1 0 0;">
                     <children>
@@ -84,10 +82,8 @@
                     </children>
                 </VBox>
 
-                <!-- CONTEÚDO PRINCIPAL -->
                 <VBox spacing="0.0" style="-fx-background-color: #f5f7fa;" HBox.hgrow="ALWAYS">
                     <children>
-                        <!-- Cards de Estatísticas -->
                         <HBox spacing="20.0" style="-fx-padding: 25 25 15 25;">
                             <children>
                                 <VBox spacing="8.0"
@@ -143,7 +139,6 @@
                             </children>
                         </HBox>
 
-                        <!-- Tabela de Pacientes -->
                         <VBox spacing="15.0" style="-fx-padding: 10 25 25 25;" VBox.vgrow="ALWAYS">
                             <children>
                                 <HBox alignment="CENTER_LEFT" spacing="10.0">
@@ -187,7 +182,6 @@
         </HBox>
     </center>
 
-    <!-- RODAPÉ -->
     <bottom>
         <HBox alignment="CENTER" style="-fx-background-color: #37474F; -fx-padding: 15;">
             <children>

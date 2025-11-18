@@ -4,11 +4,12 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
 /**
  *
  * @author carol
@@ -36,19 +37,34 @@ public class Usuario implements Serializable {
     @Column(nullable = false, length = 20)
     private String telefone;
 
+    // CAMPO ALTERADO: Trocamos String cargo por Role role
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private String cargo;
+    private Role role; // Antigamente 'cargo'
     
     public Usuario() {
     }
 
-    public Usuario(String nome, String email, String cpf, String senha, String telefone, String cargo) {
+    public Usuario(String nome, String email, String cpf, String senha, String telefone, Role role) {
         this.nome = nome;
         this.email = email;
         this.cpf = cpf;
         this.senha = senha;
         this.telefone = telefone;
-        this.cargo = cargo;
+        this.role = role;
+    }
+
+    // --- NOVO MÉTODO ---
+    /**
+     * Verifica se o usuário tem uma permissão específica, baseado em seu Role.
+     * @param permission A permissão a ser verificada.
+     * @return true se o usuário tiver a permissão, false caso contrário.
+     */
+    public boolean hasPermission(Permission permission) {
+        if (this.role == null) {
+            return false;
+        }
+        return this.role.hasPermission(permission);
     }
 
     public Long getId() {
@@ -95,14 +111,14 @@ public class Usuario implements Serializable {
         this.telefone = telefone;
     }
 
-    public String getCargo() {
-        return cargo;
+    // GETTER/SETTER ALTERADO
+    public Role getRole() {
+        return role;
     }
 
-    public void setCargo(String cargo) {
-        this.cargo = cargo;
+    public void setRole(Role role) {
+        this.role = role;
     }
-
     @Override
     public int hashCode() {
         int hash = 7;
