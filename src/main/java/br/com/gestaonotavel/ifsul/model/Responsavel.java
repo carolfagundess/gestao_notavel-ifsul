@@ -4,7 +4,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,19 +22,23 @@ public class Responsavel implements Serializable {
     private String telefone;
     @Column(nullable = false)
     private LocalDate dataNascimento;
-    @Column(name = "horas_voluntariado")
-    private Integer horasVoluntariado;
-    @Column(name = "creditos")
-    private Double creditos;
 
-    @ManyToMany(fetch = FetchType.LAZY
-            , mappedBy = "responsaveisLista")
+    @Column(name = "horas_voluntariado")
+    private Double horasVoluntariado = 0.0;
+
+    @Column(name = "creditos")
+    private Double creditos = 0.0;
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "responsaveisLista")
     private List<Paciente> pacientesLista =  new ArrayList<>();
+
+    @OneToMany(mappedBy = "responsavel", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<ParticipacaoAtividade> participacoes = new ArrayList<>();
 
     public Responsavel() {
     }
 
-    public Responsavel(Long id, String nome, String cpf, String telefone, LocalDate dataNascimento, Integer horasVoluntariado, Double creditos) {
+    public Responsavel(Long id, String nome, String cpf, String telefone, LocalDate dataNascimento, Double horasVoluntariado, Double creditos) {
         this.id = id;
         this.nome = nome;
         this.cpf = cpf;
@@ -45,75 +48,30 @@ public class Responsavel implements Serializable {
         this.creditos = creditos;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(LocalDate dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public Integer getHorasVoluntariado() {
-        return horasVoluntariado;
-    }
-
-    public void setHorasVoluntariado(Integer horasVoluntariado) {
-        this.horasVoluntariado = horasVoluntariado;
-    }
-
-    public Double getCreditos() {
-        return creditos;
-    }
-
-    public void setCreditos(Double creditos) {
-        this.creditos = creditos;
-    }
-
-    public List<Paciente> getPacientesLista() {
-        return pacientesLista;
-    }
-
-    public void setPacientesLista(List<Paciente> pacientesLista) {
-        this.pacientesLista = pacientesLista;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+    public LocalDate getDataNascimento() { return dataNascimento; }
+    public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
+    public Double getHorasVoluntariado() { return horasVoluntariado; }
+    public void setHorasVoluntariado(Double horasVoluntariado) { this.horasVoluntariado = horasVoluntariado; }
+    public Double getCreditos() { return creditos; }
+    public void setCreditos(Double creditos) { this.creditos = creditos; }
+    public List<Paciente> getPacientesLista() { return pacientesLista; }
+    public void setPacientesLista(List<Paciente> pacientesLista) { this.pacientesLista = pacientesLista; }
+    public List<ParticipacaoAtividade> getParticipacoes() { return participacoes; }
+    public void setParticipacoes(List<ParticipacaoAtividade> participacoes) { this.participacoes = participacoes; }
 
     public void adicionarResponsavel(Paciente paciente){
         this.pacientesLista.add(paciente);
         paciente.getResponsaveisLista().add(this);
     }
-    
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
