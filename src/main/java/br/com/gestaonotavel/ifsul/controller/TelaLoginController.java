@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/javafx/FXMLController.java to edit this template
- */
 package br.com.gestaonotavel.ifsul.controller;
 
 import br.com.gestaonotavel.ifsul.model.Usuario;
@@ -9,6 +5,7 @@ import br.com.gestaonotavel.ifsul.service.UsuarioService;
 import br.com.gestaonotavel.ifsul.service.factory.ServiceFactory;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
+import br.com.gestaonotavel.ifsul.util.SessionManager;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,16 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-/**
- * FXML Controller class
- *
- * @author carol
- */
 public class TelaLoginController implements Initializable {
-
-    /**
-     * Initializes the controller class.
-     */
 
     @FXML
     private TextField cpfTextField;
@@ -47,17 +35,18 @@ public class TelaLoginController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+    }
 
     @FXML
     private void handleEntrarButtonAction(ActionEvent event) {
-
         try {
             String cpf  = cpfTextField.getText();
             String senha = senhaPasswordField.getText();
 
             Usuario usuario = usuarioService.autenticarUsuario(cpf, senha);
+
+            // Inicia a sessão global
+            SessionManager.getInstance().iniciarSessao(usuario);
 
             System.out.println("Login bem-sucedido! Bem-vindo, " + usuario.getNome());
             abrirTelaPrincipal();
@@ -67,33 +56,28 @@ public class TelaLoginController implements Initializable {
     }
 
     public void abrirTelaPrincipal(){
-
         try {
             ServiceFactory serviceFactory = ServiceFactory.getInstance();
-
-            // Carrega o FXML da nova tela
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TelaPrincipal.fxml"));
-            loader.setControllerFactory(TelaPrincipalController -> {
-                return new TelaPrincipalController(serviceFactory.getPacienteService());
-            });
-            Parent root = loader.load();
 
-            // Cria um novo palco (Stage), que é uma nova janela
+            loader.setControllerFactory(controller ->
+                    new TelaPrincipalController(
+                            serviceFactory.getPacienteService(),
+                            serviceFactory.getAuditoriaLogService()
+                    )
+            );
+            Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle("Gestão Notável - Painel Principal");
             stage.setScene(new Scene(root));
-
-            // Mostra a nova janela
             stage.show();
 
-            // Pega a referência da janela de login atual e a fecha
             Stage loginStage = (Stage) cpfTextField.getScene().getWindow();
             loginStage.close();
 
         } catch (IOException e) {
+            e.printStackTrace();
             AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Falha ao abrir a tela principal.");
         }
     }
-
-
 }
