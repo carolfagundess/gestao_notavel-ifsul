@@ -26,8 +26,11 @@ public class ResponsavelService {
         String cpfOriginal = responsavelSalvando.getCpf();
         if (cpfOriginal == null || cpfOriginal.trim().isEmpty()) throw new RegraDeNegocioException("Preencha o CPF do Responsável");
 
-        String cpfLimpo = cpfOriginal.replaceAll("[^0-9]", "");
-        if (!ValidationUtil.validarCPF(cpfOriginal)) throw new RegraDeNegocioException("CPF inválido");
+        String cpfLimpo = cpfOriginal.replaceAll("[^0-9]", ""); // Tentativa de burlar algum erro de CPF (validação e mascaramento)
+
+        if (!ValidationUtil.validarCPF(cpfOriginal)) {
+            throw new RegraDeNegocioException("CPF inválido");
+        }
 
         Responsavel existente = responsavelDAO.buscarPorCpf(cpfLimpo);
         if (existente != null && !existente.getId().equals(responsavelSalvando.getId())) {

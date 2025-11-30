@@ -2,19 +2,8 @@ package br.com.gestaonotavel.ifsul.model;
 
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-/**
- *
- * @author carol
- */
 @Entity
 @Table(name = "usuario")
 public class Usuario implements Serializable {
@@ -54,11 +43,6 @@ public class Usuario implements Serializable {
         this.role = role;
     }
 
-    /**
-     * Verifica se o usuário tem uma permissão específica, baseado em seu Role.
-     * @param permission A permissão a ser verificada.
-     * @return true se o usuário tiver a permissão, false caso contrário.
-     */
     public boolean hasPermission(Permission permission) {
         if (this.role == null) {
             return false;
@@ -66,57 +50,20 @@ public class Usuario implements Serializable {
         return this.role.hasPermission(permission);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
     public String getCpf() { return cpf; }
-
     public void setCpf(String cpf) { this.cpf = cpf; }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
+    public String getTelefone() { return telefone; }
+    public void setTelefone(String telefone) { this.telefone = telefone; }
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 
     @Override
     public int hashCode() {
@@ -127,15 +74,9 @@ public class Usuario implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         final Usuario other = (Usuario) obj;
         return Objects.equals(this.id, other.id);
     }

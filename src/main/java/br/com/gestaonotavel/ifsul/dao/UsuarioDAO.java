@@ -1,19 +1,13 @@
-
 package br.com.gestaonotavel.ifsul.dao;
 
 import br.com.gestaonotavel.ifsul.model.Usuario;
 import br.com.gestaonotavel.ifsul.util.JpaUtil;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
 import java.util.List;
 
-/**
- *
- * @author carol
- */
 public class UsuarioDAO {
 
     public Usuario salvarUsuario(Usuario usuario) {
@@ -32,35 +26,10 @@ public class UsuarioDAO {
         }
     }
 
-    public Usuario buscarPorId(Long id) {
-        EntityManager em = JpaUtil.getEntityManager();
-        try {
-            return em.find(Usuario.class, id);
-        } finally {
-            em.close();
-        }
-    }
-
     public List<Usuario> listarTodos() {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.createQuery("SELECT u FROM Usuario u", Usuario.class)
-                    .getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
-    public void remover(Usuario usuario) {
-        EntityManager em = JpaUtil.getEntityManager();
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
-        try {
-            em.remove(em.merge(usuario));
-            tx.commit();
-        }catch (PersistenceException ex) {
-            tx.rollback();
-            throw ex;
+            return em.createQuery("SELECT u FROM Usuario u", Usuario.class).getResultList();
         } finally {
             em.close();
         }
@@ -69,26 +38,23 @@ public class UsuarioDAO {
     public Usuario buscarPorCpf(String cpfBuscado) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.createQuery(
-                            "SELECT u FROM Usuario u WHERE u.cpf = :cpf", Usuario.class)
-                    .setParameter("cpf", cpfBuscado)
-                    .getSingleResult();
+            return em.createQuery("SELECT u FROM Usuario u WHERE u.cpf = :cpf", Usuario.class)
+                    .setParameter("cpf", cpfBuscado).getSingleResult();
         } catch (NoResultException e) {
-            return null; //deixar para o service tratar
+            return null;
         } finally {
             em.close();
         }
     }
 
-    public Usuario buscarPorEmail(String emailBuscado) {
+    public Usuario buscarPorEmail(String email) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
             return em.createQuery("SELECT u FROM Usuario u WHERE u.email = :email", Usuario.class)
-                    .setParameter("email", emailBuscado)
-                    .getSingleResult();
-        }catch (NoResultException e) {
-            return null; //deixar para o service tratar
-        }finally {
+                    .setParameter("email", email).getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } finally {
             em.close();
         }
     }

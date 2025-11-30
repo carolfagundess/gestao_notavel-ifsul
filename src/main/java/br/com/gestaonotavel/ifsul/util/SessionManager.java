@@ -3,9 +3,6 @@ package br.com.gestaonotavel.ifsul.util;
 import br.com.gestaonotavel.ifsul.model.Permission;
 import br.com.gestaonotavel.ifsul.model.Usuario;
 
-/**
- * Gerenciador de Sessão (Singleton) para manter o usuário logado.
- */
 public final class SessionManager {
 
     private static SessionManager instance;

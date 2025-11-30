@@ -1,12 +1,15 @@
 package br.com.gestaonotavel.ifsul.controller;
 
 import br.com.gestaonotavel.ifsul.model.Paciente;
+import br.com.gestaonotavel.ifsul.model.Permission;
 import br.com.gestaonotavel.ifsul.model.Responsavel;
+import br.com.gestaonotavel.ifsul.service.AuditoriaLogService;
 import br.com.gestaonotavel.ifsul.service.PacienteService;
 import br.com.gestaonotavel.ifsul.service.factory.ServiceFactory;
 import br.com.gestaonotavel.ifsul.util.AlertUtil;
 import br.com.gestaonotavel.ifsul.util.DataChangeListener;
 import br.com.gestaonotavel.ifsul.util.DataChangeManager;
+import br.com.gestaonotavel.ifsul.util.SessionManager;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -26,6 +29,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,64 +40,112 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-/**
- * Controller da Tela Principal
- * Gerencia a listagem e operações dos pacientes
- */
 public class TelaPrincipalController implements Initializable, DataChangeListener {
 
-    // ==================== TABELA ====================
-    @FXML
-    private TableView<Paciente> pacientesTableView;
-    @FXML
-    private TableColumn<Paciente, String> colunaNome;
-    @FXML
-    private TableColumn<Paciente, Integer> colunaIdade;
-    @FXML
-    private TableColumn<Paciente, String> colunaDiagnostico;
-    @FXML
-    private TableColumn<Paciente, String> colunaResponsavel;
-    @FXML
-    private TableColumn<Paciente, String> colunaSessao;
-    @FXML
-    private TableColumn<Paciente, String> colunaStatus;
-    @FXML
-    private TableColumn<Paciente, Void> colunaAcoes;
+    @FXML private TableView<Paciente> pacientesTableView;
+    @FXML private TableColumn<Paciente, String> colunaNome;
+    @FXML private TableColumn<Paciente, Integer> colunaIdade;
+    @FXML private TableColumn<Paciente, String> colunaDiagnostico;
+    @FXML private TableColumn<Paciente, String> colunaResponsavel;
+    @FXML private TableColumn<Paciente, String> colunaSessao;
+    @FXML private TableColumn<Paciente, String> colunaStatus;
+    @FXML private TableColumn<Paciente, Void> colunaAcoes;
 
-    // ==================== FILTROS ====================
-    @FXML
-    private TextField txtBuscar;
-    @FXML
-    private ComboBox<String> cbxFiltroStatus;
-    @FXML
-    private ComboBox<String> cbxFiltroResponsavel;
-    @FXML
-    private Button btnLimparFiltros;
+    @FXML private TextField txtBuscar;
+    @FXML private ComboBox<String> cbxFiltroStatus;
+    @FXML private ComboBox<String> cbxFiltroResponsavel;
+    @FXML private Button btnLimparFiltros;
 
-    // ==================== ESTATÍSTICAS ====================
-    @FXML
-    private Label lblTotalPacientes;
-    @FXML
-    private Label lblAtendimentosHoje;
-    @FXML
-    private Label lblPendentes;
-    @FXML
-    private Label lblSemResponsavel;
-    @FXML
-    private Label lblTotalRegistros;
+    @FXML private Button btnMenu;
+    @FXML private Button btnPacientes;
+    @FXML private Button btnAgendamentos;
+    @FXML private Button btnAtividades;
+    @FXML private Button btnRegistrarVoluntariado;
+    @FXML private Button btnRelatorioVoluntariado;
+    @FXML private Button btnFinanceiro;
+    @FXML private Button btnRelatorios;
 
-    // ==================== SERVIÇOS E LISTAS ====================
-    final PacienteService pacienteService;
+    @FXML private Button btnSair;
+    @FXML private Button btnNovoPaciente;
+
+    @FXML private Label lblTotalPacientes;
+    @FXML private Label lblAtendimentosHoje;
+    @FXML private Label lblPendentes;
+    @FXML private Label lblSemResponsavel;
+    @FXML private Label lblTotalRegistros;
+
+    private final PacienteService pacienteService;
+    private final AuditoriaLogService auditoriaLogService;
+
     private ObservableList<Paciente> listaPacientes;
     private ObservableList<Paciente> listaFiltrada;
 
-    // ==================== LISTENERS (NOVO) ====================
     private ChangeListener<String> filtroTextoChangeListener;
     private ChangeListener<String> filtroStatusChangeListener;
     private ChangeListener<String> filtroResponsavelChangeListener;
 
-    public TelaPrincipalController(PacienteService pacienteService) {
+    public TelaPrincipalController(PacienteService pacienteService, AuditoriaLogService auditoriaLogService) {
         this.pacienteService = pacienteService;
+        this.auditoriaLogService = auditoriaLogService;
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        this.listaPacientes = FXCollections.observableArrayList();
+        this.listaFiltrada = FXCollections.observableArrayList();
+
+        configurarTabela();
+        configurarFiltros();
+        carregarDados();
+
+        DataChangeManager.getInstance().addDataChangeListener(this);
+    }
+
+    @FXML
+    private void handleAbrirListagemAtividades(ActionEvent event) {
+        abrirModal(
+                "/view/TelaListagemAtividades.fxml",
+                "Gerenciamento de Atividades",
+                (Callback<Class<?>, Object>) controller -> new TelaListagemAtividadesController(
+                        ServiceFactory.getInstance().getAtividadeService(),
+                        ServiceFactory.getInstance().getTipoAtividadeService()
+                )
+        );
+    }
+
+    @FXML
+    private void handleAbrirRegistroVoluntariado(ActionEvent event) {
+        abrirModal(
+                "/view/TelaRegistroParticipacao.fxml",
+                "Registrar Voluntariado",
+                (Callback<Class<?>, Object>) controller -> new TelaRegistroParticipacaoController(
+                        ServiceFactory.getInstance().getParticipacaoAtividadeService(),
+                        ServiceFactory.getInstance().getAtividadeService(),
+                        ServiceFactory.getInstance().getResponsavelService()
+                )
+        );
+    }
+
+    @FXML
+    private void handleAbrirRelatorioVoluntarios(ActionEvent event) {
+        abrirModal(
+                "/view/TelaRelatorioVoluntarios.fxml",
+                "Relatório de Voluntariado",
+                (Callback<Class<?>, Object>) controller -> new TelaRelatorioVoluntariosController(
+                        ServiceFactory.getInstance().getResponsavelService()
+                )
+        );
+    }
+
+    @FXML
+    private void handleAbrirFinanceiro(ActionEvent event) {
+        abrirModal(
+                "/view/TelaListagemMovimentacoes.fxml",
+                "Fluxo de Caixa",
+                (Callback<Class<?>, Object>) controller -> new TelaListagemMovimentacoesController(
+                        ServiceFactory.getInstance().getMovimentacaoFinanceiraService()
+                )
+        );
     }
 
     @FXML
@@ -103,317 +155,190 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
 
     @FXML
     private void handleAbrirAgendamento(ActionEvent actionEvent){
-        try {
-            ServiceFactory serviceFactory = ServiceFactory.getInstance();
-
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaAgendamento.fxml"));
-            fxmlLoader.setControllerFactory(TelaAgendamentoController -> {
-                return new TelaAgendamentoController(pacienteService, serviceFactory.getEspecialistaService(), serviceFactory.getAtendimentoService());
-            });
-            Parent parent = fxmlLoader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Agendamento de Atendimentos");
-            stage.setScene(new Scene(parent));
-            stage.setResizable(false);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-        }catch (IOException e){
-            e.printStackTrace();
-            AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Erro", "Erro ao abrir a tela de cadastro!");
-        }
+        abrirModal(
+                "/view/TelaAgendamento.fxml",
+                "Agendamento de Atendimentos",
+                (Callback<Class<?>, Object>) controller -> new TelaAgendamentoController(
+                        pacienteService,
+                        ServiceFactory.getInstance().getEspecialistaService(),
+                        ServiceFactory.getInstance().getAtendimentoService()
+                )
+        );
     }
 
     @FXML
     private void handleLimparFiltros(ActionEvent event) {
-        // Remover listeners temporariamente para evitar trigger múltiplo
         txtBuscar.textProperty().removeListener(filtroTextoChangeListener);
         cbxFiltroStatus.valueProperty().removeListener(filtroStatusChangeListener);
         cbxFiltroResponsavel.valueProperty().removeListener(filtroResponsavelChangeListener);
 
-        // Limpar campos
         txtBuscar.clear();
         cbxFiltroStatus.setValue("Todos");
-        cbxFiltroResponsavel.setValue("Todos"); // aplicarFiltros será chamado aqui
+        cbxFiltroResponsavel.setValue("Todos");
 
-        // Readicionar listeners
         txtBuscar.textProperty().addListener(filtroTextoChangeListener);
         cbxFiltroStatus.valueProperty().addListener(filtroStatusChangeListener);
         cbxFiltroResponsavel.valueProperty().addListener(filtroResponsavelChangeListener);
 
-        // Garantir que a tabela atualize com os filtros limpos
         aplicarFiltros();
     }
 
-    // ==================== INITIALIZE ====================
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        this.listaPacientes = FXCollections.observableArrayList();
-        this.listaFiltrada = FXCollections.observableArrayList();
+    @FXML
+    private void handleSairButtonAction(ActionEvent event) {
+        SessionManager.getInstance().encerrarSessao();
+        Stage stagePrincipal = (Stage) pacientesTableView.getScene().getWindow();
+        stagePrincipal.close();
 
-        configurarTabela();
-        configurarFiltros(); // Chama o método que agora cria e armazena os listeners
-        carregarDados();
-
-        DataChangeManager.getInstance().addDataChangeListener(this);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TelaLogin.fxml"));
+            loader.setControllerFactory(controller -> new TelaLoginController(ServiceFactory.getInstance().getUsuarioService()));
+            Parent root = loader.load();
+            Stage loginStage = new Stage();
+            loginStage.setTitle("Gestão Notável - Login");
+            loginStage.setScene(new Scene(root));
+            loginStage.setResizable(false);
+            loginStage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro Crítico", "Não foi possível reabrir a tela de login.");
+        }
     }
 
-    // ==================== CONFIGURAÇÃO DA TABELA ====================
     private void configurarTabela() {
-        // Configurar colunas básicas
         colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));
-
-        // Coluna Idade (calculada)
         colunaIdade.setCellValueFactory(cellData -> {
-            LocalDate dataNascimento = cellData.getValue().getDataNascimento();
-            int idade = Period.between(dataNascimento, LocalDate.now()).getYears();
+            LocalDate dn = cellData.getValue().getDataNascimento();
+            int idade = (dn != null) ? Period.between(dn, LocalDate.now()).getYears() : 0;
             return new SimpleIntegerProperty(idade).asObject();
         });
-
         colunaDiagnostico.setCellValueFactory(new PropertyValueFactory<>("diagnostico"));
-
-        // Coluna Responsável
         colunaResponsavel.setCellValueFactory(cellData -> {
-            List<Responsavel> responsaveis = cellData.getValue().getResponsaveisLista();
-            if (responsaveis != null && !responsaveis.isEmpty()) {
-                return new SimpleStringProperty(responsaveis.get(0).getNome());
-            }
-            return new SimpleStringProperty("Sem responsável");
+            List<Responsavel> resp = cellData.getValue().getResponsaveisLista();
+            return new SimpleStringProperty((resp != null && !resp.isEmpty()) ? resp.get(0).getNome() : "Sem responsável");
         });
+        colunaSessao.setCellValueFactory(cellData -> new SimpleStringProperty("--/--/----"));
 
-        // Coluna Próxima Sessão (placeholder)
-        colunaSessao.setCellValueFactory(cellData ->
-                new SimpleStringProperty("--/--/----")
-        );
-
-        // Coluna Status com estilização
-        colunaStatus.setCellValueFactory(cellData ->
-                new SimpleStringProperty("Ativo")
-        );
+        colunaStatus.setCellValueFactory(cellData -> new SimpleStringProperty("Ativo"));
         colunaStatus.setCellFactory(col -> new TableCell<Paciente, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
+            @Override protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
-                    setText(null);
-                    setStyle("");
+                    setText(null); setStyle("");
                 } else {
                     setText(item);
-                    setStyle("-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; " +
-                            "-fx-font-weight: bold; -fx-background-radius: 12; " +
-                            "-fx-padding: 5 12; -fx-alignment: CENTER;");
+                    setStyle("-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; -fx-font-weight: bold; -fx-background-radius: 12; -fx-padding: 5 12; -fx-alignment: CENTER;");
                 }
             }
         });
 
-        // Configurar coluna de ações
         configurarColunaAcoes();
-
-        // Estilo da tabela
         pacientesTableView.setPlaceholder(new Label("Nenhum paciente cadastrado"));
-
-        // Estilo das linhas alternadas (opcional, pode ser melhorado via CSS)
-        pacientesTableView.setRowFactory(tv -> {
-            TableRow<Paciente> row = new TableRow<>();
-            row.setStyle("-fx-background-color: transparent;"); // Reset base style
-            row.indexProperty().addListener((obs, oldIndex, newIndex) -> {
-                if (newIndex.intValue() % 2 == 0) {
-                    row.setStyle("-fx-background-color: #f9f9f9;");
-                } else {
-                    row.setStyle("-fx-background-color: white;");
-                }
-            });
-            return row;
-        });
     }
 
     private void configurarColunaAcoes() {
+        SessionManager session = SessionManager.getInstance();
         colunaAcoes.setCellFactory(param -> new TableCell<Paciente, Void>() {
             private final Button btnVisualizar = criarBotaoAcao("👁", "#2196F3", "Visualizar");
             private final Button btnEditar = criarBotaoAcao("✏", "#FF9800", "Editar");
             private final Button btnExcluir = criarBotaoAcao("🗑", "#F44336", "Excluir");
             private final HBox container = new HBox(8, btnVisualizar, btnEditar, btnExcluir);
-
             {
                 container.setAlignment(Pos.CENTER);
+                btnEditar.setDisable(!session.hasPermission(Permission.EDITAR_PACIENTE));
+                btnExcluir.setDisable(!session.hasPermission(Permission.EXCLUIR_PACIENTE));
 
-                btnVisualizar.setOnAction(event -> {
-                    Paciente paciente = getTableView().getItems().get(getIndex());
-                    visualizarPaciente(paciente);
-                });
-
-                btnEditar.setOnAction(event -> {
-                    Paciente paciente = getTableView().getItems().get(getIndex());
-                    editarPaciente(paciente);
-                });
-
-                btnExcluir.setOnAction(event -> {
-                    Paciente paciente = getTableView().getItems().get(getIndex());
-                    excluirPaciente(paciente);
-                });
+                btnVisualizar.setOnAction(event -> visualizarPaciente(getTableView().getItems().get(getIndex())));
+                btnEditar.setOnAction(event -> editarPaciente(getTableView().getItems().get(getIndex())));
+                btnExcluir.setOnAction(event -> excluirPaciente(getTableView().getItems().get(getIndex())));
             }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
+            @Override protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
                 setGraphic(empty ? null : container);
             }
         });
     }
 
-    private Button criarBotaoAcao(String texto, String cor, String tooltip) {
-        Button btn = new Button(texto);
-        String baseStyle = String.format(
-                "-fx-background-color: %s; " +
-                        "-fx-text-fill: white; " +
-                        "-fx-font-size: 14; " +
-                        "-fx-padding: 6 12; " +
-                        "-fx-background-radius: 6; " +
-                        "-fx-cursor: hand; " +
-                        "-fx-min-width: 38; " +
-                        "-fx-pref-width: 38;", cor
-        );
-        String hoverStyle = baseStyle + "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);";
-
-        btn.setStyle(baseStyle);
-        btn.setOnMouseEntered(e -> btn.setStyle(hoverStyle));
-        btn.setOnMouseExited(e -> btn.setStyle(baseStyle));
+    private Button criarBotaoAcao(String text, String color, String tooltip) {
+        Button btn = new Button(text);
+        btn.setStyle("-fx-background-color: " + color + "; -fx-text-fill: white; -fx-font-size: 14; -fx-padding: 6 12; -fx-background-radius: 6; -fx-cursor: hand; -fx-min-width: 38; -fx-pref-width: 38;");
         btn.setTooltip(new Tooltip(tooltip));
         return btn;
     }
 
-    // ==================== CONFIGURAÇÃO DE FILTROS ====================
     private void configurarFiltros() {
-        // ComboBox Status
         cbxFiltroStatus.getItems().addAll("Todos", "Ativo", "Inativo", "Pendente");
         cbxFiltroStatus.setValue("Todos");
-
-        // ComboBox Responsável
         cbxFiltroResponsavel.getItems().add("Todos");
         cbxFiltroResponsavel.setValue("Todos");
 
-        // --- Criar e guardar os listeners ---
-        filtroTextoChangeListener = (obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                aplicarFiltros();
-            }
-        };
+        filtroTextoChangeListener = (obs, oldVal, newVal) -> { if (newVal != null) aplicarFiltros(); };
+        filtroStatusChangeListener = (obs, oldVal, newVal) -> { if (newVal != null) aplicarFiltros(); };
+        filtroResponsavelChangeListener = (obs, oldVal, newVal) -> { if (newVal != null) aplicarFiltros(); };
 
-        filtroStatusChangeListener = (obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                aplicarFiltros();
-            }
-        };
-
-        filtroResponsavelChangeListener = (obs, oldVal, newVal) -> {
-            if (newVal != null) {
-                aplicarFiltros();
-            }
-        };
-
-        // --- Adicionar os listeners ---
         txtBuscar.textProperty().addListener(filtroTextoChangeListener);
         cbxFiltroStatus.valueProperty().addListener(filtroStatusChangeListener);
         cbxFiltroResponsavel.valueProperty().addListener(filtroResponsavelChangeListener);
     }
 
-    // ==================== APLICAR FILTROS ====================
     private void aplicarFiltros() {
         String busca = txtBuscar.getText() != null ? txtBuscar.getText().toLowerCase().trim() : "";
-        String status = cbxFiltroStatus.getValue() != null ? cbxFiltroStatus.getValue() : "Todos";
         String responsavel = cbxFiltroResponsavel.getValue() != null ? cbxFiltroResponsavel.getValue() : "Todos";
 
         listaFiltrada.clear();
-        listaFiltrada.addAll(
-                listaPacientes.stream()
-                        .filter(p -> busca.isEmpty() ||
-                                (p.getNome() != null && p.getNome().toLowerCase().contains(busca)) ||
-                                (p.getDiagnostico() != null && p.getDiagnostico().toLowerCase().contains(busca)) ||
-                                (p.getCpf() != null && p.getCpf().contains(busca)))
-                        .filter(p -> status.equals("Todos") || status.equals("Ativo")) // TODO: Expandir lógica para outros status
-                        .filter(p -> {
-                            if (responsavel == null || responsavel.equals("Todos")) return true;
-                            List<Responsavel> resp = p.getResponsaveisLista();
-                            return resp != null && !resp.isEmpty() &&
-                                    resp.get(0).getNome().equals(responsavel);
-                        })
-                        .collect(Collectors.toList())
-        );
+        listaFiltrada.addAll(listaPacientes.stream()
+                .filter(p -> busca.isEmpty() ||
+                        (p.getNome() != null && p.getNome().toLowerCase().contains(busca)) ||
+                        (p.getCpf() != null && p.getCpf().contains(busca)) ||
+                        (p.getDiagnostico() != null && p.getDiagnostico().toLowerCase().contains(busca)))
+                .filter(p -> {
+                    if (responsavel.equals("Todos")) return true;
+                    List<Responsavel> resp = p.getResponsaveisLista();
+                    return resp != null && !resp.isEmpty() && resp.get(0).getNome().equals(responsavel);
+                })
+                .collect(Collectors.toList()));
 
         pacientesTableView.setItems(listaFiltrada);
         atualizarContadores();
     }
 
-    // ==================== CARREGAMENTO DE DADOS (ATUALIZADO) ====================
     private void carregarDados() {
         try {
-            List<Paciente> pacientes = pacienteService.listarTodos();
             listaPacientes.clear();
-            listaPacientes.addAll(pacientes);
-            atualizarComboResponsaveis(); // Atualiza o combo antes de aplicar filtros
-            aplicarFiltros(); // Aplica filtros e atualiza a tabela/contadores
+            listaPacientes.addAll(pacienteService.listarTodos());
+            atualizarComboResponsaveis();
+            aplicarFiltros();
         } catch (Exception e) {
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro de Carregamento",
-                    "Não foi possível carregar os dados dos pacientes: " + e.getMessage());
-            listaPacientes.clear();
-            listaFiltrada.clear();
-            pacientesTableView.setItems(listaFiltrada); // Mostra tabela vazia
-            atualizarContadores(); // Zera contadores
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao carregar dados: " + e.getMessage());
         }
     }
 
     private void atualizarComboResponsaveis() {
-        String valorAtual = cbxFiltroResponsavel.getValue();
+        if (filtroResponsavelChangeListener != null) cbxFiltroResponsavel.valueProperty().removeListener(filtroResponsavelChangeListener);
 
-        // Remover listener temporariamente
-        if (filtroResponsavelChangeListener != null) {
-            cbxFiltroResponsavel.valueProperty().removeListener(filtroResponsavelChangeListener);
-        }
-
+        String selecionado = cbxFiltroResponsavel.getValue();
         cbxFiltroResponsavel.getItems().clear();
         cbxFiltroResponsavel.getItems().add("Todos");
 
         listaPacientes.stream()
-                .flatMap(p -> p.getResponsaveisLista() != null ?
-                        p.getResponsaveisLista().stream() :
-                        java.util.stream.Stream.empty())
-                .filter(r -> r != null && r.getNome() != null) // Garantir que não haja nulls
+                .flatMap(p -> p.getResponsaveisLista().stream())
+                .filter(r -> r != null)
                 .map(Responsavel::getNome)
                 .distinct()
                 .sorted()
-                .forEach(nome -> cbxFiltroResponsavel.getItems().add(nome));
+                .forEach(cbxFiltroResponsavel.getItems()::add);
 
-        // Restaurar valor ou definir "Todos"
-        if (valorAtual != null && cbxFiltroResponsavel.getItems().contains(valorAtual)) {
-            cbxFiltroResponsavel.setValue(valorAtual);
-        } else {
-            cbxFiltroResponsavel.setValue("Todos");
-        }
+        cbxFiltroResponsavel.setValue(cbxFiltroResponsavel.getItems().contains(selecionado) ? selecionado : "Todos");
 
-        // Readicionar listener se ele existir
-        if (filtroResponsavelChangeListener != null) {
-            cbxFiltroResponsavel.valueProperty().addListener(filtroResponsavelChangeListener);
-        }
+        if (filtroResponsavelChangeListener != null) cbxFiltroResponsavel.valueProperty().addListener(filtroResponsavelChangeListener);
     }
 
-
     private void atualizarContadores() {
-        // Total de pacientes na lista original
         lblTotalPacientes.setText(String.valueOf(listaPacientes.size()));
-
-        // Total de registros na lista filtrada (exibida na tabela)
-        lblTotalRegistros.setText(listaFiltrada.size() + " registro(s) encontrado(s)");
-
-        // Atendimentos hoje (placeholder - futura implementação)
+        lblTotalRegistros.setText(listaFiltrada.size() + " registro(s)");
+        long semResp = listaPacientes.stream().filter(p -> p.getResponsaveisLista() == null || p.getResponsaveisLista().isEmpty()).count();
+        lblSemResponsavel.setText(String.valueOf(semResp));
         lblAtendimentosHoje.setText("0");
-
-        // Pendentes (placeholder - futura implementação)
         lblPendentes.setText("0");
-
-        // Sem responsável (contado na lista original)
-        long semResponsavel = listaPacientes.stream()
-                .filter(p -> p.getResponsaveisLista() == null || p.getResponsaveisLista().isEmpty())
-                .count();
-        lblSemResponsavel.setText(String.valueOf(semResponsavel));
     }
 
     private void visualizarPaciente(Paciente paciente) {
@@ -422,180 +347,120 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         dialog.setHeaderText("📋 Informações de " + paciente.getNome());
 
         GridPane grid = new GridPane();
-        grid.setHgap(15);
-        grid.setVgap(12);
-        grid.setPadding(new Insets(20));
+        grid.setHgap(15); grid.setVgap(12); grid.setPadding(new Insets(20));
         grid.setStyle("-fx-background-color: white;");
 
-        // Estilo para labels
         String labelStyle = "-fx-font-weight: bold; -fx-text-fill: #495057;";
         String valueStyle = "-fx-text-fill: #212529;";
 
         int row = 0;
-
-        // Seção: Dados Pessoais
-        Label secaoDados = new Label("DADOS PESSOAIS");
-        secaoDados.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #2c5aa0;");
-        grid.add(secaoDados, 0, row++, 2, 1);
-
-        Separator sep1 = new Separator();
-        grid.add(sep1, 0, row++, 2, 1);
+        grid.add(new Label("DADOS PESSOAIS"), 0, row++, 2, 1);
+        grid.add(new Separator(), 0, row++, 2, 1);
 
         addLabelValue(grid, row++, "Nome:", paciente.getNome(), labelStyle, valueStyle);
-        addLabelValue(grid, row++, "Idade:",
-                Period.between(paciente.getDataNascimento(), LocalDate.now()).getYears() + " anos",
-                labelStyle, valueStyle);
-        addLabelValue(grid, row++, "CPF:",
-                paciente.getCpf() != null ? paciente.getCpf() : "Não informado",
-                labelStyle, valueStyle);
+        addLabelValue(grid, row++, "Idade:", Period.between(paciente.getDataNascimento(), LocalDate.now()).getYears() + " anos", labelStyle, valueStyle);
+        addLabelValue(grid, row++, "CPF:", paciente.getCpf() != null ? paciente.getCpf() : "Não informado", labelStyle, valueStyle);
 
-        row++; // Espaço
-
-        // Seção: Informações Clínicas
-        Label secaoClinica = new Label("INFORMAÇÕES CLÍNICAS");
-        secaoClinica.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #28a745;");
-        grid.add(secaoClinica, 0, row++, 2, 1);
-
-        Separator sep2 = new Separator();
-        grid.add(sep2, 0, row++, 2, 1);
-
+        row++;
+        grid.add(new Label("INFORMAÇÕES CLÍNICAS"), 0, row++, 2, 1);
+        grid.add(new Separator(), 0, row++, 2, 1);
         addLabelValue(grid, row++, "Diagnóstico:", paciente.getDiagnostico(), labelStyle, valueStyle);
-        addLabelValue(grid, row++, "Escolaridade:", paciente.getEscolaridade(), labelStyle, valueStyle);
         addLabelValue(grid, row++, "Condição:", paciente.getCondicaoClinica(), labelStyle, valueStyle);
 
-        row++; // Espaço
-
-        // Seção: Responsável
-        if (paciente.getResponsaveisLista() != null && !paciente.getResponsaveisLista().isEmpty()) {
-            Responsavel resp = paciente.getResponsaveisLista().get(0);
-
-            Label secaoResp = new Label("RESPONSÁVEL");
-            secaoResp.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #fd7e14;");
-            grid.add(secaoResp, 0, row++, 2, 1);
-
-            Separator sep3 = new Separator();
-            grid.add(sep3, 0, row++, 2, 1);
-
-            addLabelValue(grid, row++, "Nome:", resp.getNome(), labelStyle, valueStyle);
-            addLabelValue(grid, row++, "Telefone:", resp.getTelefone(), labelStyle, valueStyle);
-            addLabelValue(grid, row++, "CPF:", resp.getCpf(), labelStyle, valueStyle);
-        } else {
-            Label avisoResp = new Label("⚠️ Nenhum responsável associado");
-            avisoResp.setStyle("-fx-text-fill: #dc3545; -fx-font-style: italic;");
-            grid.add(avisoResp, 0, row++, 2, 1);
-        }
-
         ScrollPane scroll = new ScrollPane(grid);
-        scroll.setFitToWidth(true);
-        scroll.setPrefSize(500, 450);
-
+        scroll.setFitToWidth(true); scroll.setPrefSize(500, 450);
         dialog.getDialogPane().setContent(scroll);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CLOSE);
         dialog.showAndWait();
     }
 
-    // Método auxiliar
-    private void addLabelValue(GridPane grid, int row, String labelText, String valueText,
-                               String labelStyle, String valueStyle) {
-        Label label = new Label(labelText);
-        label.setStyle(labelStyle);
-        label.setMinWidth(120);
-
-        Label value = new Label(valueText);
-        value.setStyle(valueStyle);
-        value.setWrapText(true);
-        value.setMaxWidth(300);
-
-        grid.add(label, 0, row);
-        grid.add(value, 1, row);
+    private void addLabelValue(GridPane grid, int row, String labelText, String valueText, String labelStyle, String valueStyle) {
+        Label label = new Label(labelText); label.setStyle(labelStyle); label.setMinWidth(120);
+        Label value = new Label(valueText); value.setStyle(valueStyle); value.setWrapText(true); value.setMaxWidth(300);
+        grid.add(label, 0, row); grid.add(value, 1, row);
     }
 
-
     private void editarPaciente(Paciente paciente) {
-        // TODO: Implementar edição completa
-        abrirTelaCadastro(paciente); // Reutiliza a tela de cadastro para edição
+        abrirTelaCadastro(paciente);
     }
 
     private void excluirPaciente(Paciente paciente) {
-        Alert confirmacao = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmacao.setTitle("Confirmar Exclusão");
-        confirmacao.setHeaderText("⚠️ Atenção!");
-        confirmacao.setContentText(
-                "Deseja realmente excluir o paciente?\n\n" +
-                        "Nome: " + paciente.getNome() + "\n" +
-                        "Diagnóstico: " + paciente.getDiagnostico() + "\n" +
-                        "Responsável: " + paciente.getResponsaveisLista() + "\n\n" +
-                        "Esta ação não pode ser desfeita."
-        );
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Tem certeza que deseja excluir " + paciente.getNome() + "?", ButtonType.YES, ButtonType.NO);
+        alert.setHeaderText("Esta ação é irreversível.");
 
-        ButtonType btnConfirmar = new ButtonType("Excluir", ButtonBar.ButtonData.OK_DONE);
-        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
-        confirmacao.getButtonTypes().setAll(btnConfirmar, btnCancelar);
+        if (alert.showAndWait().orElse(ButtonType.NO) == ButtonType.YES) {
+            TextInputDialog dialog = new TextInputDialog();
+            dialog.setTitle("Segurança");
+            dialog.setHeaderText("Digite EXCLUIR para confirmar:");
 
-        Optional<ButtonType> resultado = confirmacao.showAndWait();
-        if (resultado.isPresent() && resultado.get() == btnConfirmar) {
-            try {
-                pacienteService.deletarPaciente(paciente);
-
-                AlertUtil.showAlert(Alert.AlertType.INFORMATION,
-                        "Sucesso",
-                        "Paciente excluído com sucesso!"); // Remover "(Simulação)" depois
-                carregarDados(); // Recarrega a lista
-            } catch (Exception e) {
-                AlertUtil.showAlert(Alert.AlertType.ERROR,
-                        "Erro",
-                        "Erro ao excluir paciente: " + e.getMessage());
+            Optional<String> result = dialog.showAndWait();
+            if (result.isPresent() && result.get().equals("EXCLUIR")) {
+                try {
+                    pacienteService.deletarPaciente(paciente);
+                    auditoriaLogService.registrarAcao("Excluiu paciente ID: " + paciente.getId() + ", Nome: " + paciente.getNome());
+                    AlertUtil.showAlert(Alert.AlertType.INFORMATION, "Sucesso", "Paciente excluído.");
+                    carregarDados();
+                } catch (Exception e) {
+                    AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Falha ao excluir: " + e.getMessage());
+                }
+            } else {
+                AlertUtil.showAlert(Alert.AlertType.WARNING, "Cancelado", "Texto de confirmação incorreto.");
             }
         }
     }
 
     private void abrirTelaCadastro(Paciente paciente) {
         try {
-            ServiceFactory serviceFactory = ServiceFactory.getInstance();
-
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/view/TelaCadastroPaciente.fxml"));
-            fxmlLoader.setControllerFactory(TelaCadastroPacienteController ->{
-                return new TelaCadastroPacienteController(serviceFactory.getPacienteService());
-            });
+            fxmlLoader.setControllerFactory(c -> new TelaCadastroPacienteController(ServiceFactory.getInstance().getPacienteService()));
             Parent root = fxmlLoader.load();
 
-            // Se for edição, passar o paciente para o controller da tela de cadastro
             if (paciente != null) {
                 TelaCadastroPacienteController controller = fxmlLoader.getController();
                 controller.setPacienteParaEdicao(paciente);
             }
 
             Stage stage = new Stage();
-            stage.setTitle(paciente == null ? "Cadastro de Pacientes" : "Editar Paciente: " + paciente.getNome());
+            stage.setTitle(paciente == null ? "Cadastro de Pacientes" : "Editar Paciente");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
-            if (paciente != null) {
-                Button btnSalvarTelaCadastro = (Button) root.lookup("#btnSalvar"); // Busca o botão pelo ID FXML
-                if (btnSalvarTelaCadastro != null) {
-                    btnSalvarTelaCadastro.setText("Atualizar");
-                }
-            }
-            stage.showAndWait(); // Espera a tela de cadastro fechar
+            stage.initModality(Modality.APPLICATION_MODAL);
+            if(pacientesTableView.getScene() != null) stage.initOwner(pacientesTableView.getScene().getWindow());
 
+            if (paciente != null) {
+                Button btnSalvar = (Button) root.lookup("#btnSalvar");
+                if (btnSalvar != null) btnSalvar.setText("Atualizar");
+            }
+            stage.showAndWait();
         } catch (IOException ex) {
-            System.err.println("Erro ao abrir tela de cadastro: " + ex.getMessage());
-            ex.printStackTrace(); // Imprime o stack trace para depuração
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro Crítico",
-                    "Não foi possível abrir a tela de cadastro de paciente.\nErro: " + ex.getMessage());
-        } catch (Exception e) {
-            System.err.println("Erro inesperado ao abrir tela de cadastro: " + e.getMessage());
-            e.printStackTrace();
-            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro Inesperado",
-                    "Ocorreu um erro inesperado.\nErro: " + e.getMessage());
+            ex.printStackTrace();
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir tela de cadastro.");
         }
     }
 
+    private void abrirModal(String fxmlPath, String title, Callback<Class<?>, Object> controllerFactory) {
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(fxmlPath));
+            fxmlLoader.setControllerFactory(controllerFactory);
+            Parent parent = fxmlLoader.load();
+            Stage stage = new Stage();
+            stage.setTitle(title);
+            stage.setScene(new Scene(parent));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            if (pacientesTableView.getScene() != null) {
+                stage.initOwner(pacientesTableView.getScene().getWindow());
+            }
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+            AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro", "Erro ao abrir tela: " + e.getMessage());
+        }
+    }
 
-    // ==================== DATA CHANGE LISTENER ====================
     @Override
     public void atualizarDados(String entidade) {
-        if (entidade.equals("Paciente")) {
-            System.out.println("Recebido evento de atualização para Paciente. Recarregando dados...");
+        if ("Paciente".equals(entidade)) {
             carregarDados();
         }
     }

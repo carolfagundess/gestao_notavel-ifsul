@@ -5,8 +5,7 @@ import java.util.List;
 
 public class DataChangeManager {
 
-    public static final DataChangeManager INSTANCE = new DataChangeManager();
-
+    private static final DataChangeManager INSTANCE = new DataChangeManager();
     private List<DataChangeListener> listeners = new ArrayList<>();
 
     private DataChangeManager(){}
@@ -18,7 +17,6 @@ public class DataChangeManager {
     public void addDataChangeListener(DataChangeListener dataChangeListener){
         if(!listeners.contains(dataChangeListener)){
             listeners.add(dataChangeListener);
-            System.out.println("Novo ouvinte registrado!");
         }
     }
 
@@ -27,5 +25,4 @@ public class DataChangeManager {
             listener.atualizarDados(entidade);
         }
     }
-
 }

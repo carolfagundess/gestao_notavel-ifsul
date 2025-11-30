@@ -2,7 +2,6 @@ package br.com.gestaonotavel.ifsul.dao;
 
 import br.com.gestaonotavel.ifsul.model.Atendimento;
 import br.com.gestaonotavel.ifsul.util.JpaUtil;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
@@ -31,12 +30,13 @@ public class AtendimentoDAO {
     public List<Atendimento> buscarPorEspecialista(Integer idEspecialista) {
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.createQuery("SELECT a FROM Atendimento a WHERE a.especialista.id = :idEspecialista", Atendimento.class)
+            if (idEspecialista == null) {
+                return em.createQuery("SELECT a FROM Atendimento a", Atendimento.class).getResultList();
+            }
+            return em.createQuery("SELECT a FROM Atendimento a WHERE a.especialista.idEspecialista = :idEspecialista", Atendimento.class)
                     .setParameter("idEspecialista", idEspecialista)
                     .getResultList();
-        }catch (NoResultException e){
-            return null;
-        }finally {
+        } finally {
             em.close();
         }
     }
@@ -44,7 +44,7 @@ public class AtendimentoDAO {
     public List<Atendimento> buscarPorEspecialistaEDataHora(Integer idEspecialista, LocalDateTime dataHora){
         EntityManager em = JpaUtil.getEntityManager();
         try {
-            return em.createQuery("SELECT a FROM Atendimento a WHERE a.especialista.id = :idEspecialista AND a.dataHora = :dataHora", Atendimento.class)
+            return em.createQuery("SELECT a FROM Atendimento a WHERE a.especialista.idEspecialista = :idEspecialista AND a.dataHora = :dataHora", Atendimento.class)
                     .setParameter("idEspecialista", idEspecialista)
                     .setParameter("dataHora", dataHora)
                     .getResultList();

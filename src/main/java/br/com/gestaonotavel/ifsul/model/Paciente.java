@@ -1,10 +1,12 @@
 package br.com.gestaonotavel.ifsul.model;
 
+import br.com.gestaonotavel.ifsul.util.EncryptionUtil;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "paciente")
@@ -12,37 +14,33 @@ public class Paciente implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idPaciente")
     private Long idPaciente;
 
     @Column(nullable = false, length = 100)
     private String nome;
 
-    @Column(length = 11)
+    @Column(length = 255) // Aumentado para suportar criptografia
     private String cpf;
 
     @Column(nullable = false)
     private LocalDate dataNascimento;
 
     @Column(nullable = false, length = 50)
-    private String escolaridade; //
+    private String escolaridade;
 
-    //Substitui deficiencia
     @Column(length = 255)
     private String diagnostico;
 
-    //Para fins de aprofundamento da condição
     @Column(length = 100)
     private String condicaoClinica;
 
     @Column(columnDefinition = "TEXT")
     private String observacoesGerais;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "vinculo_responsavel",
             joinColumns = @JoinColumn(name = "paciente_id"),
-    inverseJoinColumns = @JoinColumn(name = "responsavel_id"))
+            inverseJoinColumns = @JoinColumn(name = "responsavel_id"))
     private List<Responsavel> responsaveisLista = new ArrayList<>();
 
     public Paciente() {
@@ -57,85 +55,39 @@ public class Paciente implements Serializable {
         this.observacoesGerais = observacoesGerais;
     }
 
-    public Long getId() {
-        return idPaciente;
+    // --- CRIPTOGRAFIA ---
+    @PrePersist
+    @PreUpdate
+    public void criptografarDados() {
+        this.cpf = EncryptionUtil.encrypt(this.cpf);
     }
 
-    public void setId(Long id) {
-        this.idPaciente = id;
+    @PostLoad
+    public void descriptografarDados() {
+        this.cpf = EncryptionUtil.decrypt(this.cpf);
     }
+    // --------------------
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public void setDataNascimento(LocalDate dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public String getEscolaridade() {
-        return escolaridade;
-    }
-
-    public void setEscolaridade(String escolaridade) {
-        this.escolaridade = escolaridade;
-    }
-
-    public String getDiagnostico() {
-        return diagnostico;
-    }
-
-    public void setDiagnostico(String diagnostico) {
-        this.diagnostico = diagnostico;
-    }
-
-    public String getCondicaoClinica() {
-        return condicaoClinica;
-    }
-
-    public void setCondicaoClinica(String condicaoClinica) {
-        this.condicaoClinica = condicaoClinica;
-    }
-
-    public String getObservacoesGerais() {
-        return observacoesGerais;
-    }
-
-    public void setObservacoesGerais(String observacoesGerais) {
-        this.observacoesGerais = observacoesGerais;
-    }
-
-    public Long getIdPaciente() {
-        return idPaciente;
-    }
-
-    public void setIdPaciente(Long idPaciente) {
-        this.idPaciente = idPaciente;
-    }
-
-    public List<Responsavel> getResponsaveisLista() {
-        return responsaveisLista;
-    }
-
-    public void setResponsaveisLista(List<Responsavel> responsaveisLista) {
-        this.responsaveisLista = responsaveisLista;
-    }
+    public Long getId() { return idPaciente; }
+    public void setId(Long id) { this.idPaciente = id; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getCpf() { return cpf; }
+    public void setCpf(String cpf) { this.cpf = cpf; }
+    public LocalDate getDataNascimento() { return dataNascimento; }
+    public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
+    public String getEscolaridade() { return escolaridade; }
+    public void setEscolaridade(String escolaridade) { this.escolaridade = escolaridade; }
+    public String getDiagnostico() { return diagnostico; }
+    public void setDiagnostico(String diagnostico) { this.diagnostico = diagnostico; }
+    public String getCondicaoClinica() { return condicaoClinica; }
+    public void setCondicaoClinica(String condicaoClinica) { this.condicaoClinica = condicaoClinica; }
+    public String getObservacoesGerais() { return observacoesGerais; }
+    public void setObservacoesGerais(String observacoesGerais) { this.observacoesGerais = observacoesGerais; }
+    public Long getIdPaciente() { return idPaciente; }
+    public void setIdPaciente(Long idPaciente) { this.idPaciente = idPaciente; }
+    public List<Responsavel> getResponsaveisLista() { return responsaveisLista; }
+    public void setResponsaveisLista(List<Responsavel> responsaveisLista) { this.responsaveisLista = responsaveisLista; }
 
     public void adicionarResponsavel(Responsavel responsavel){
         this.responsaveisLista.add(responsavel);
@@ -144,23 +96,14 @@ public class Paciente implements Serializable {
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 97 * hash + Objects.hashCode(this.idPaciente);
-        return hash;
+        return Objects.hash(idPaciente);
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Paciente other = (Paciente) obj;
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Paciente other = (Paciente) obj;
         return Objects.equals(this.idPaciente, other.idPaciente);
     }
 }

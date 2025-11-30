@@ -8,7 +8,6 @@ import java.util.Base64;
 
 public class EncryptionUtil {
 
-    // Chaves fixas para ambiente local (32 chars e 16 chars)
     private static final String SECRET_KEY = "12345678901234567890123456789012";
     private static final String INIT_VECTOR = "1234567890123456";
 

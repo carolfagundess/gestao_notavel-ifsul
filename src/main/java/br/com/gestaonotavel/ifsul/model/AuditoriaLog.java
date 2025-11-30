@@ -17,10 +17,10 @@ public class AuditoriaLog implements Serializable {
     private LocalDateTime timestamp;
 
     @Column(nullable = false, length = 100)
-    private String usuarioNome; // Nome do usuário que fez a ação
+    private String usuarioNome;
 
     @Column(nullable = false, length = 255)
-    private String acao; // Descrição da ação
+    private String acao;
 
     public AuditoriaLog() {
     }
@@ -31,37 +31,14 @@ public class AuditoriaLog implements Serializable {
         this.acao = acao;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public LocalDateTime getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(LocalDateTime timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getUsuarioNome() {
-        return usuarioNome;
-    }
-
-    public void setUsuarioNome(String usuarioNome) {
-        this.usuarioNome = usuarioNome;
-    }
-
-    public String getAcao() {
-        return acao;
-    }
-
-    public void setAcao(String acao) {
-        this.acao = acao;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public LocalDateTime getTimestamp() { return timestamp; }
+    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+    public String getUsuarioNome() { return usuarioNome; }
+    public void setUsuarioNome(String usuarioNome) { this.usuarioNome = usuarioNome; }
+    public String getAcao() { return acao; }
+    public void setAcao(String acao) { this.acao = acao; }
 
     @Override
     public boolean equals(Object o) {

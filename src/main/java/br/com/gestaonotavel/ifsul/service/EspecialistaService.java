@@ -2,33 +2,23 @@ package br.com.gestaonotavel.ifsul.service;
 
 import br.com.gestaonotavel.ifsul.dao.EspecialistaDAO;
 import br.com.gestaonotavel.ifsul.model.Especialista;
-
+import br.com.gestaonotavel.ifsul.util.RegraDeNegocioException;
 import java.util.List;
 
 public class EspecialistaService {
 
     private EspecialistaDAO especialistaDAO = new EspecialistaDAO();
 
-    public Especialista salvar(Especialista especialistaSalvando) {
+    public Especialista salvar(Especialista especialista) {
+        if (especialista.getNome() == null || especialista.getNome().isEmpty()) throw new IllegalArgumentException("Nome obrigatório");
+        if (especialista.getRegistroProfissional() == null) throw new IllegalArgumentException("Registro obrigatório");
 
-        if (especialistaSalvando.getNome() == null || especialistaSalvando.getNome().isEmpty()) {
-            throw new IllegalArgumentException("Preencha o nome do Especialista");
-        } else if (especialistaSalvando.getEspecialidade() == null || especialistaSalvando.getEspecialidade().isEmpty()) {
-            throw new IllegalArgumentException("Preencha uma especialidade para o Especialista");
-        } else if (especialistaSalvando.getValorSessao() == null || especialistaSalvando.getValorSessao() < 0) {
-            throw new IllegalArgumentException("Preencha o valor da sessão para o Especialista");
-        } else if (especialistaSalvando.getRegistroProfissional() == null || especialistaSalvando.getRegistroProfissional().isEmpty()) {
-            throw new IllegalArgumentException("Preencha o registro profissional do Especialista");
+        Especialista existente = especialistaDAO.buscarPorRegistroProfissional(especialista.getRegistroProfissional());
+        if (existente != null && !existente.getIdEspecialista().equals(especialista.getIdEspecialista())) {
+            throw new IllegalArgumentException("Registro Profissional já cadastrado");
         }
-
-        if (especialistaDAO.buscarPorRegistroProfissional(especialistaSalvando.getRegistroProfissional()) != null) {
-            throw new IllegalArgumentException("Registro Profissional já cadastrado no sistema");
-        }
-
-        return especialistaDAO.salvar(especialistaSalvando);
+        return especialistaDAO.salvar(especialista);
     }
 
-    public List<Especialista> listarTodos() {
-        return especialistaDAO.listarTodos();
-    }
+    public List<Especialista> listarTodos() { return especialistaDAO.listarTodos(); }
 }

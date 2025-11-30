@@ -21,7 +21,6 @@ public class Atividade implements Serializable {
     @Column(precision = 12, scale = 2)
     private Double valorArrecadado;
 
-    //criar uma classe tipo atividade
     @ManyToOne
     @JoinColumn(name = "tipo_atividade_id", nullable = false)
     private TipoAtividade tipo;
@@ -39,59 +38,18 @@ public class Atividade implements Serializable {
         this.tipo = tipo;
     }
 
-    public Integer getIdAtividade() {
-        return idAtividade;
-    }
-
-    public void setIdAtividade(Integer idAtividade) {
-        this.idAtividade = idAtividade;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public LocalDateTime getDataInicio() {
-        return dataInicio;
-    }
-
-    public void setDataInicio(LocalDateTime dataInicio) {
-        this.dataInicio = dataInicio;
-    }
-
-    public LocalDateTime getDataFim() {
-        return dataFim;
-    }
-
-    public void setDataFim(LocalDateTime dataFim) {
-        this.dataFim = dataFim;
-    }
-
-    public String getLocal() {
-        return local;
-    }
-
-    public void setLocal(String local) {
-        this.local = local;
-    }
-
-    public Double getValorArrecadado() {
-        return valorArrecadado;
-    }
-
-    public void setValorArrecadado(Double valorArrecadado) {
-        this.valorArrecadado = valorArrecadado;
-    }
-
-    public TipoAtividade getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoAtividade tipo) {
-        this.tipo = tipo;
-    }
+    public Integer getIdAtividade() { return idAtividade; }
+    public void setIdAtividade(Integer idAtividade) { this.idAtividade = idAtividade; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public LocalDateTime getDataInicio() { return dataInicio; }
+    public void setDataInicio(LocalDateTime dataInicio) { this.dataInicio = dataInicio; }
+    public LocalDateTime getDataFim() { return dataFim; }
+    public void setDataFim(LocalDateTime dataFim) { this.dataFim = dataFim; }
+    public String getLocal() { return local; }
+    public void setLocal(String local) { this.local = local; }
+    public Double getValorArrecadado() { return valorArrecadado; }
+    public void setValorArrecadado(Double valorArrecadado) { this.valorArrecadado = valorArrecadado; }
+    public TipoAtividade getTipo() { return tipo; }
+    public void setTipo(TipoAtividade tipo) { this.tipo = tipo; }
 }

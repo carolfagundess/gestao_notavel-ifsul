@@ -1,6 +1,5 @@
 package br.com.gestaonotavel.ifsul.model;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -37,69 +36,22 @@ public class Especialista implements Serializable {
         this.registroProfissional = registroProfissional;
     }
 
-    public Integer getIdEspecialista() {
-        return idEspecialista;
-    }
-
-    public void setIdEspecialista(Integer idEspecialista) {
-        this.idEspecialista = idEspecialista;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getEspecialidade() {
-        return especialidade;
-    }
-
-    public void setEspecialidade(String especialidade) {
-        this.especialidade = especialidade;
-    }
-
-    public Double getValorSessao() {
-        return valorSessao;
-    }
-
-    public void setValorSessao(Double valorSessao) {
-        this.valorSessao = valorSessao;
-    }
-
-    public Integer getDuracao() {
-        return duracao;
-    }
-
-    public void setDuracao(Integer duracao) {
-        this.duracao = duracao;
-    }
-
-    public Integer getMaxPacientes() {
-        return maxPacientes;
-    }
-
-    public void setMaxPacientes(Integer maxPacientes) {
-        this.maxPacientes = maxPacientes;
-    }
-
-    public Integer getPacientesAtuais() {
-        return pacientesAtuais;
-    }
-
-    public void setPacientesAtuais(Integer pacientesAtuais) {
-        this.pacientesAtuais = pacientesAtuais;
-    }
-
-    public String getRegistroProfissional() {
-        return registroProfissional;
-    }
-
-    public void setRegistroProfissional(String registroProfissional) {
-        this.registroProfissional = registroProfissional;
-    }
+    public Integer getIdEspecialista() { return idEspecialista; }
+    public void setIdEspecialista(Integer idEspecialista) { this.idEspecialista = idEspecialista; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getEspecialidade() { return especialidade; }
+    public void setEspecialidade(String especialidade) { this.especialidade = especialidade; }
+    public Double getValorSessao() { return valorSessao; }
+    public void setValorSessao(Double valorSessao) { this.valorSessao = valorSessao; }
+    public Integer getDuracao() { return duracao; }
+    public void setDuracao(Integer duracao) { this.duracao = duracao; }
+    public Integer getMaxPacientes() { return maxPacientes; }
+    public void setMaxPacientes(Integer maxPacientes) { this.maxPacientes = maxPacientes; }
+    public Integer getPacientesAtuais() { return pacientesAtuais; }
+    public void setPacientesAtuais(Integer pacientesAtuais) { this.pacientesAtuais = pacientesAtuais; }
+    public String getRegistroProfissional() { return registroProfissional; }
+    public void setRegistroProfissional(String registroProfissional) { this.registroProfissional = registroProfissional; }
 
     @Override
     public boolean equals(Object o) {
@@ -111,5 +63,10 @@ public class Especialista implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hashCode(idEspecialista);
+    }
+
+    @Override
+    public String toString() {
+        return nome;
     }
 }

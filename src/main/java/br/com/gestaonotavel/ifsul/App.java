@@ -12,7 +12,6 @@ import java.io.IOException;
 
 import static br.com.gestaonotavel.ifsul.util.DataInitializer.popularBancoDeDados;
 
-
 /**
  * JavaFX App
  */
@@ -20,16 +19,12 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-
         ServiceFactory serviceFactory = ServiceFactory.getInstance();
-        // Carrega o arquivo FXML da tela de login
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TelaLogin.fxml"));
         loader.setControllerFactory(controllerClass -> {
             if (controllerClass == TelaLoginController.class) {
-                // Injeta o serviço do nosso contêiner
                 return new TelaLoginController(serviceFactory.getUsuarioService());
             } else {
-                // Se não for o controller que esperamos, deixe o JavaFX tentar
                 try {
                     return controllerClass.getDeclaredConstructor().newInstance();
                 } catch (Exception e) {
@@ -39,20 +34,17 @@ public class App extends Application {
         });
         Parent root = loader.load();
 
-        // Carrega o arquivo CSS
-        String css = this.getClass().getResource("/styles/telalogin.css").toExternalForm();
-        root.getStylesheets().add(css);
+        // Tenta carregar CSS se existir, senão ignora
+        try {
+            String css = this.getClass().getResource("/styles/telalogin.css").toExternalForm();
+            root.getStylesheets().add(css);
+        } catch(Exception e) {
+            System.out.println("Aviso: CSS telalogin.css não encontrado ou erro ao carregar.");
+        }
 
-        // Cria a cena com o conteúdo da tela
         Scene scene = new Scene(root, 800, 600);
-
-        // Define o título da janela
         stage.setTitle("Gestão Notável - Login");
-
-        // Define a cena na janela
         stage.setScene(scene);
-
-        // Exibe a janela
         stage.show();
     }
 
@@ -60,5 +52,4 @@ public class App extends Application {
         popularBancoDeDados();
         launch(args);
     }
-
 }
