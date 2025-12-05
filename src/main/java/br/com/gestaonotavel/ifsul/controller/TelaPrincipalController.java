@@ -71,7 +71,7 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     // Botões do Cabeçalho
     @FXML private Button btnSair;
     @FXML private Button btnNovoPaciente;
-    @FXML private Button btnNovoEspecialista; // NOVO BOTÃO
+    @FXML private Button btnNovoEspecialista;
 
     // Labels de Estatística
     @FXML private Label lblTotalPacientes;
@@ -110,14 +110,32 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         configurarFiltros();
         carregarDados();
 
-        // --- CONEXÃO MANUAL DOS BOTÕES ---
-        if (btnFinanceiro != null) btnFinanceiro.setOnAction(this::handleAbrirFinanceiro);
-        if (btnRelatorios != null) btnRelatorios.setOnAction(this::handleAbrirRelatorioVoluntarios);
-        if (btnAtividades != null) btnAtividades.setOnAction(this::handleAbrirListagemAtividades);
-        if (btnRegistrarVoluntariado != null) btnRegistrarVoluntariado.setOnAction(this::handleAbrirRegistroVoluntariado);
-        if (btnRelatorioVoluntariado != null) btnRelatorioVoluntariado.setOnAction(this::handleAbrirRelatorioVoluntarios);
-        if (btnNovoEspecialista != null) btnNovoEspecialista.setOnAction(this::handleNovoEspecialista);
-        // -----------------------------------------------------
+        // --- CONEXÃO MANUAL DOS BOTÕES E TOOLTIPS ---
+        if (btnFinanceiro != null) {
+            btnFinanceiro.setOnAction(this::handleAbrirFinanceiro);
+            btnFinanceiro.setTooltip(new Tooltip("Módulo Financeiro"));
+        }
+        if (btnRelatorios != null) {
+            btnRelatorios.setOnAction(this::handleAbrirRelatorioVoluntarios);
+            btnRelatorios.setTooltip(new Tooltip("Relatórios Gerais"));
+        }
+        if (btnAtividades != null) {
+            btnAtividades.setOnAction(this::handleAbrirListagemAtividades);
+            btnAtividades.setTooltip(new Tooltip("Gerenciar Atividades"));
+        }
+        if (btnRegistrarVoluntariado != null) {
+            btnRegistrarVoluntariado.setOnAction(this::handleAbrirRegistroVoluntariado);
+            btnRegistrarVoluntariado.setTooltip(new Tooltip("Registrar Participação"));
+        }
+        if (btnRelatorioVoluntariado != null) {
+            btnRelatorioVoluntariado.setOnAction(this::handleAbrirRelatorioVoluntarios);
+            btnRelatorioVoluntariado.setTooltip(new Tooltip("Relatório de Voluntários"));
+        }
+        if (btnNovoEspecialista != null) {
+            btnNovoEspecialista.setOnAction(this::handleNovoEspecialista);
+        }
+        if (btnPacientes != null) btnPacientes.setTooltip(new Tooltip("Lista de Pacientes"));
+        if (btnAgendamentos != null) btnAgendamentos.setTooltip(new Tooltip("Agendamentos"));
 
         DataChangeManager.getInstance().addDataChangeListener(this);
     }

@@ -74,28 +74,22 @@
                                 style="-fx-font-size: 16; -fx-font-weight: bold;" text="☰"/>
 
                         <Button fx:id="btnPacientes" minHeight="60.0" minWidth="60.0"
-                                style="-fx-font-size: 14; -fx-text-fill: #667eea; -fx-font-weight: bold;" text="PAC"
-                                tooltip = "Pacientes"/>
+                                style="-fx-font-size: 14; -fx-text-fill: #667eea; -fx-font-weight: bold;" text="PAC"/>
 
                         <Button fx:id="btnAgendamentos" onAction="#handleAbrirAgendamento" minHeight="60.0"
-                                minWidth="60.0" style="-fx-font-size: 14; -fx-font-weight: bold;" text="AGD"
-                                tooltip = "Agendamentos"/>
+                                minWidth="60.0" style="-fx-font-size: 14; -fx-font-weight: bold;" text="AGD"/>
 
                         <Button fx:id="btnAtividades" onAction="#handleAbrirListagemAtividades" minHeight="60.0"
-                                minWidth="60.0" style="-fx-font-size: 14; -fx-font-weight: bold;" text="ATV"
-                                tooltip = "Atividades"/>
+                                minWidth="60.0" style="-fx-font-size: 14; -fx-font-weight: bold;" text="ATV"/>
 
                         <Button fx:id="btnRegistrarVoluntariado" onAction="#handleAbrirRegistroVoluntariado" minHeight="60.0"
-                                minWidth="60.0" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #9C27B0;" text="VOL"
-                                tooltip = "Registrar Voluntariado"/>
+                                minWidth="60.0" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #9C27B0;" text="VOL"/>
 
                         <Button fx:id="btnRelatorioVoluntariado" onAction="#handleAbrirRelatorioVoluntarios" minHeight="60.0"
-                                minWidth="60.0" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #9C27B0;" text="RVO"
-                                tooltip = "Relatório de Voluntários"/>
+                                minWidth="60.0" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #9C27B0;" text="RVO"/>
 
                         <Button fx:id="btnFinanceiro" onAction="#handleAbrirFinanceiro" minHeight="60.0" minWidth="60.0"
-                                style="-fx-font-size: 14; -fx-font-weight: bold;" text="FIN"
-                                tooltip = "Financeiro"/>
+                                style="-fx-font-size: 14; -fx-font-weight: bold;" text="FIN"/>
                     </children>
                 </VBox>
 
