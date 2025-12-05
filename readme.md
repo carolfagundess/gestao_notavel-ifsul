@@ -194,9 +194,9 @@ Representa os usuários do sistema com diferentes níveis de acesso.
 - `id` (Long): Identificador único
 - `nome` (String): Nome completo
 - `email` (String): Email único
-- `cpf` (String): CPF único (11 caracteres)
+- `cpf` (String): CPF único (255 caracteres, em função de erros com mascaramento)
 - `senha` (String): Senha criptografada com BCrypt
-- `telefone` (String): Telefone de contato
+- `telefone` (String): Telefone de contato (255 caracteres, pelo mesmo motivo que "CPF" possui esse número)
 - `role` (Role): Perfil de acesso (ADMIN, SECRETARIO)
 
 **Relacionamentos:**
