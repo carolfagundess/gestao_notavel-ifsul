@@ -19,14 +19,23 @@ public class ResponsavelService {
 
         if (responsavelSalvando == null) throw new IllegalArgumentException("Preencha as informações");
         if (responsavelSalvando.getNome() == null || responsavelSalvando.getNome().isEmpty()) throw new IllegalArgumentException("Preencha o nome do Responsável");
-        if (responsavelSalvando.getTelefone() == null || responsavelSalvando.getTelefone().isEmpty()) throw new IllegalArgumentException("Preencha o número de telefone do Responsável");
+
+        // Validação e Limpeza do Telefone
+        if (responsavelSalvando.getTelefone() == null || responsavelSalvando.getTelefone().isEmpty()) {
+            throw new IllegalArgumentException("Preencha o número de telefone do Responsável");
+        }
+        // Remove máscara do telefone para salvar apenas números
+        String telefoneLimpo = responsavelSalvando.getTelefone().replaceAll("[^0-9]", "");
+        responsavelSalvando.setTelefone(telefoneLimpo);
+
+
         if (responsavelSalvando.getDataNascimento() == null) throw new IllegalArgumentException("Preencha a data de nascimento do Responsável");
         if (responsavelSalvando.getDataNascimento().isAfter(hoje)) throw new IllegalArgumentException("Preencha uma data de nascimento do Responsável válida");
 
         String cpfOriginal = responsavelSalvando.getCpf();
         if (cpfOriginal == null || cpfOriginal.trim().isEmpty()) throw new RegraDeNegocioException("Preencha o CPF do Responsável");
 
-        String cpfLimpo = cpfOriginal.replaceAll("[^0-9]", ""); // Tentativa de burlar algum erro de CPF (validação e mascaramento)
+        String cpfLimpo = cpfOriginal.replaceAll("[^0-9]", "");
 
         if (!ValidationUtil.validarCPF(cpfOriginal)) {
             throw new RegraDeNegocioException("CPF inválido");

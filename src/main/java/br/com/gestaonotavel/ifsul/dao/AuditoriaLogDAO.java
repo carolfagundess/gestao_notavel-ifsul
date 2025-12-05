@@ -6,6 +6,7 @@ import br.com.gestaonotavel.ifsul.util.JpaUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceException;
+import java.util.List;
 
 public class AuditoriaLogDAO {
 
@@ -21,6 +22,17 @@ public class AuditoriaLogDAO {
                 tx.rollback();
             }
             System.err.println("Erro ao salvar log de auditoria: " + e.getMessage());
+        } finally {
+            em.close();
+        }
+    }
+
+
+    public List<AuditoriaLog> listarTodos() {
+        EntityManager em = JpaUtil.getEntityManager();
+        try {
+            return em.createQuery("SELECT a FROM AuditoriaLog a ORDER BY a.timestamp DESC", AuditoriaLog.class)
+                    .getResultList();
         } finally {
             em.close();
         }

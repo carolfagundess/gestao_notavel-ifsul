@@ -42,6 +42,8 @@ import java.util.stream.Collectors;
 
 public class TelaPrincipalController implements Initializable, DataChangeListener {
 
+    // ==================== ELEMENTOS DA INTERFACE (FXML) ====================
+
     @FXML private TableView<Paciente> pacientesTableView;
     @FXML private TableColumn<Paciente, String> colunaNome;
     @FXML private TableColumn<Paciente, Integer> colunaIdade;
@@ -56,6 +58,7 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     @FXML private ComboBox<String> cbxFiltroResponsavel;
     @FXML private Button btnLimparFiltros;
 
+    // Botões do Menu Lateral
     @FXML private Button btnMenu;
     @FXML private Button btnPacientes;
     @FXML private Button btnAgendamentos;
@@ -65,14 +68,19 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     @FXML private Button btnFinanceiro;
     @FXML private Button btnRelatorios;
 
+    // Botões do Cabeçalho
     @FXML private Button btnSair;
     @FXML private Button btnNovoPaciente;
+    @FXML private Button btnNovoEspecialista; // NOVO BOTÃO
 
+    // Labels de Estatística
     @FXML private Label lblTotalPacientes;
     @FXML private Label lblAtendimentosHoje;
     @FXML private Label lblPendentes;
     @FXML private Label lblSemResponsavel;
     @FXML private Label lblTotalRegistros;
+
+    // ==================== SERVIÇOS E DADOS ====================
 
     private final PacienteService pacienteService;
     private final AuditoriaLogService auditoriaLogService;
@@ -84,10 +92,14 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     private ChangeListener<String> filtroStatusChangeListener;
     private ChangeListener<String> filtroResponsavelChangeListener;
 
+    // ==================== CONSTRUTOR ====================
+
     public TelaPrincipalController(PacienteService pacienteService, AuditoriaLogService auditoriaLogService) {
         this.pacienteService = pacienteService;
         this.auditoriaLogService = auditoriaLogService;
     }
+
+    // ==================== INICIALIZAÇÃO ====================
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -98,7 +110,29 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         configurarFiltros();
         carregarDados();
 
+        // --- CONEXÃO MANUAL DOS BOTÕES ---
+        if (btnFinanceiro != null) btnFinanceiro.setOnAction(this::handleAbrirFinanceiro);
+        if (btnRelatorios != null) btnRelatorios.setOnAction(this::handleAbrirRelatorioVoluntarios);
+        if (btnAtividades != null) btnAtividades.setOnAction(this::handleAbrirListagemAtividades);
+        if (btnRegistrarVoluntariado != null) btnRegistrarVoluntariado.setOnAction(this::handleAbrirRegistroVoluntariado);
+        if (btnRelatorioVoluntariado != null) btnRelatorioVoluntariado.setOnAction(this::handleAbrirRelatorioVoluntarios);
+        if (btnNovoEspecialista != null) btnNovoEspecialista.setOnAction(this::handleNovoEspecialista);
+        // -----------------------------------------------------
+
         DataChangeManager.getInstance().addDataChangeListener(this);
+    }
+
+    // ==================== AÇÕES DOS BOTÕES ====================
+
+    @FXML
+    private void handleAbrirFinanceiro(ActionEvent event) {
+        abrirModal(
+                "/view/TelaListagemMovimentacoes.fxml",
+                "Fluxo de Caixa",
+                (Callback<Class<?>, Object>) controller -> new TelaListagemMovimentacoesController(
+                        ServiceFactory.getInstance().getMovimentacaoFinanceiraService()
+                )
+        );
     }
 
     @FXML
@@ -128,22 +162,42 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
 
     @FXML
     private void handleAbrirRelatorioVoluntarios(ActionEvent event) {
-        abrirModal(
-                "/view/TelaRelatorioVoluntarios.fxml",
-                "Relatório de Voluntariado",
-                (Callback<Class<?>, Object>) controller -> new TelaRelatorioVoluntariosController(
-                        ServiceFactory.getInstance().getResponsavelService()
-                )
-        );
+        // Cria um diálogo de escolha
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Central de Relatórios");
+        alert.setHeaderText("Selecione o relatório desejado:");
+        alert.setContentText("Escolha uma opção:");
+
+        ButtonType btnVoluntarios = new ButtonType("Voluntariado");
+        ButtonType btnFinanceiro = new ButtonType("Financeiro");
+        ButtonType btnAuditoria = new ButtonType("Auditoria (Logs)");
+        ButtonType btnCancelar = new ButtonType("Cancelar", ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        alert.getButtonTypes().setAll(btnVoluntarios, btnFinanceiro, btnAuditoria, btnCancelar);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent()) {
+            if (result.get() == btnVoluntarios) {
+                abrirModal("/view/TelaRelatorioVoluntarios.fxml", "Relatório de Voluntariado",
+                        c -> new TelaRelatorioVoluntariosController(ServiceFactory.getInstance().getResponsavelService()));
+            } else if (result.get() == btnFinanceiro) {
+                abrirModal("/view/TelaRelatorioFinanceiro.fxml", "Relatório Financeiro",
+                        c -> new TelaRelatorioFinanceiroController(ServiceFactory.getInstance().getMovimentacaoFinanceiraService()));
+            } else if (result.get() == btnAuditoria) {
+                abrirModal("/view/TelaVisualizarLogs.fxml", "Logs de Auditoria",
+                        c -> new TelaVisualizarLogsController(ServiceFactory.getInstance().getAuditoriaLogService()));
+            }
+        }
     }
 
     @FXML
-    private void handleAbrirFinanceiro(ActionEvent event) {
+    private void handleNovoEspecialista(ActionEvent event) {
         abrirModal(
-                "/view/TelaListagemMovimentacoes.fxml",
-                "Fluxo de Caixa",
-                (Callback<Class<?>, Object>) controller -> new TelaListagemMovimentacoesController(
-                        ServiceFactory.getInstance().getMovimentacaoFinanceiraService()
+                "/view/TelaCadastroEspecialista.fxml",
+                "Cadastro de Especialista",
+                (Callback<Class<?>, Object>) controller -> new TelaCadastroEspecialistaController(
+                        ServiceFactory.getInstance().getEspecialistaService()
                 )
         );
     }
@@ -203,6 +257,8 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
             AlertUtil.showAlert(Alert.AlertType.ERROR, "Erro Crítico", "Não foi possível reabrir a tela de login.");
         }
     }
+
+    // ==================== MÉTODOS AUXILIARES E LÓGICA ====================
 
     private void configurarTabela() {
         colunaNome.setCellValueFactory(new PropertyValueFactory<>("nome"));

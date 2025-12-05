@@ -6,7 +6,7 @@
     <top>
         <VBox style="-fx-background-color: #00897B; -fx-padding: 20;">
             <children>
-                <HBox alignment="CENTER_LEFT">
+                <HBox alignment="CENTER_LEFT" spacing="20.0">
                     <children>
                         <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                             <children>
@@ -14,6 +14,11 @@
                                 <Label style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 13;" text="Histórico de entradas e saídas financeiras" />
                             </children>
                         </VBox>
+
+                        <Button fx:id="btnNovaMovimentacao" onAction="#handleNovaMovimentacao"
+                                style="-fx-background-color: white; -fx-text-fill: #00897B; -fx-font-weight: bold; -fx-cursor: hand;"
+                                text="+ Nova Movimentação" />
+
                         <VBox alignment="CENTER_RIGHT">
                             <children>
                                 <Label style="-fx-text-fill: white; -fx-font-size: 12;" text="SALDO ATUAL" />

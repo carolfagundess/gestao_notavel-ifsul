@@ -5,6 +5,8 @@ import br.com.gestaonotavel.ifsul.model.AuditoriaLog;
 import br.com.gestaonotavel.ifsul.model.Usuario;
 import br.com.gestaonotavel.ifsul.util.SessionManager;
 
+import java.util.List;
+
 public class AuditoriaLogService {
 
     private final AuditoriaLogDAO auditoriaLogDAO;
@@ -24,5 +26,9 @@ public class AuditoriaLogService {
         } catch (Exception e) {
             System.err.println("Falha crítica ao registrar auditoria: " + e.getMessage());
         }
+    }
+
+    public List<AuditoriaLog> listarLogs() {
+        return auditoriaLogDAO.listarTodos();
     }
 }

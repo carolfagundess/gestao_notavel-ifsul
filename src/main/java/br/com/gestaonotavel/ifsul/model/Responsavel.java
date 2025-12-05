@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import br.com.gestaonotavel.ifsul.util.EncryptionUtil; // Import para criptografia
 
 @Entity
 @Table(name = "responsavel")
@@ -14,12 +15,18 @@ public class Responsavel implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(length = 100, nullable = false)
     private String nome;
-    @Column(length = 11, nullable = false, unique = true)
+
+    // AUMENTADO PARA 255 (Para suportar criptografia ou máscaras)
+    @Column(length = 255, nullable = false, unique = true)
     private String cpf;
-    @Column(length = 11, nullable = false)
+
+    // AUMENTADO PARA 255 (Para evitar erro se salvar com máscara)
+    @Column(length = 255, nullable = false)
     private String telefone;
+
     @Column(nullable = false)
     private LocalDate dataNascimento;
 
@@ -47,6 +54,22 @@ public class Responsavel implements Serializable {
         this.horasVoluntariado = horasVoluntariado;
         this.creditos = creditos;
     }
+
+    // --- HOOKS DE CRIPTOGRAFIA (SPRINT 1) ---
+    @PrePersist
+    @PreUpdate
+    public void criptografarDados() {
+        this.cpf = EncryptionUtil.encrypt(this.cpf);
+        // Opcional: Criptografar telefone também se desejar
+        // this.telefone = EncryptionUtil.encrypt(this.telefone);
+    }
+
+    @PostLoad
+    public void descriptografarDados() {
+        this.cpf = EncryptionUtil.decrypt(this.cpf);
+        // this.telefone = EncryptionUtil.decrypt(this.telefone);
+    }
+    // ---------------------------------------
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
