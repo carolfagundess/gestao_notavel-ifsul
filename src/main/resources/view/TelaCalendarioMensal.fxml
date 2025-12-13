@@ -19,6 +19,7 @@
                         <Button fx:id="btnFechar" mnemonicParsing="false" onAction="#handleFechar" style="-fx-background-color: #FF5252; -fx-text-fill: white;" text="Fechar" />
                     </children>
                 </HBox>
+                <Button fx:id="btnNovoAgendamento" mnemonicParsing="false" onAction="#handleNovoAgendamento" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;" text="Novo Agendamento" />
             </children>
         </VBox>
     </top>

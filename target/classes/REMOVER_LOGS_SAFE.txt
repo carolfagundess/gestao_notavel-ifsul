@@ -1,0 +1,2 @@
+Todos os arquivos de log/auditoria são isolados e não referenciados em nenhum outro lugar do sistema. A remoção é segura e não causará erro.
+

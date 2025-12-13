@@ -6,7 +6,9 @@ import br.com.gestaonotavel.ifsul.service.AtendimentoService;
 import br.com.gestaonotavel.ifsul.service.AtividadeService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -28,6 +30,7 @@ public class TelaCalendarioMensalController implements Initializable {
     @FXML private Button btnAnterior;
     @FXML private Button btnProximo;
     @FXML private Button btnFechar;
+    @FXML private Button btnNovoAgendamento;
 
     private YearMonth mesAtual;
     private final AtendimentoService atendimentoService;
@@ -59,6 +62,28 @@ public class TelaCalendarioMensalController implements Initializable {
     @FXML
     void handleFechar(ActionEvent event) {
         ((Stage) btnFechar.getScene().getWindow()).close();
+    }
+
+    @FXML
+    private void handleNovoAgendamento(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/TelaAgendamento.fxml"));
+            // Injeta os services necessários
+            loader.setControllerFactory(c -> new TelaAgendamentoController(
+                new br.com.gestaonotavel.ifsul.service.PacienteService(),
+                new br.com.gestaonotavel.ifsul.service.EspecialistaService(),
+                new br.com.gestaonotavel.ifsul.service.AtendimentoService()
+            ));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Novo Agendamento");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Opcional: mostrar alerta de erro
+        }
     }
 
     private void atualizarCalendario() {

@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import java.net.URL;
@@ -33,6 +34,8 @@ public class TelaAgendamentoController implements Initializable {
     @FXML private Label lblDuracao;
     @FXML private Label lblEspecialidade;
     @FXML private Button btnSalvar;
+    @FXML private VBox boxCamposAgendamento;
+    @FXML private Button btnNovoAgendamento;
 
     final PacienteService pacienteService;
     final EspecialistaService especialistaService;
@@ -69,6 +72,11 @@ public class TelaAgendamentoController implements Initializable {
         if(e!=null) {
             lblValorSessao.setText("R$ " + e.getValorSessao());
             lblEspecialidade.setText(e.getEspecialidade());
+            lblDuracao.setText(e.getDuracao() != null ? e.getDuracao() + " min" : "-- min");
+        } else {
+            lblValorSessao.setText("R$ 0,00");
+            lblEspecialidade.setText("Não selecionado");
+            lblDuracao.setText("-- min");
         }
     }
 
@@ -95,4 +103,22 @@ public class TelaAgendamentoController implements Initializable {
 
     @FXML void handleCancelarButtonAction(ActionEvent event) { ((Stage)btnSalvar.getScene().getWindow()).close(); }
     @FXML void handleLimparButtonAction(ActionEvent event) { txtLocal.clear(); }
+
+    @FXML
+    public void handleNovoAgendamento(ActionEvent event) {
+        boxCamposAgendamento.setVisible(true);
+        boxCamposAgendamento.setManaged(true);
+        btnNovoAgendamento.setDisable(true);
+        // Limpa os campos
+        cbxPaciente.getSelectionModel().clearSelection();
+        cbxEspecialista.getSelectionModel().clearSelection();
+        txtLocal.clear();
+        datePickerData.setValue(null);
+        cbxHora.getSelectionModel().clearSelection();
+        cbxMinuto.getSelectionModel().clearSelection();
+        txtObservacao.clear();
+        lblValorSessao.setText("R$ 0,00");
+        lblDuracao.setText("-- min");
+        lblEspecialidade.setText("Não selecionado");
+    }
 }

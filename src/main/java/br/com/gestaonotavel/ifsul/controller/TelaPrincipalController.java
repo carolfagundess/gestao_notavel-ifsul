@@ -60,7 +60,6 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
 
     // Botões do Menu Lateral
     @FXML private Button btnMenu;
-    @FXML private Button btnPacientes;
     @FXML private Button btnAgendamentos;
     @FXML private Button btnAtividades;
     @FXML private Button btnRegistrarVoluntariado;
@@ -134,9 +133,11 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         if (btnNovoEspecialista != null) {
             btnNovoEspecialista.setOnAction(this::handleNovoEspecialista);
         }
-        if (btnPacientes != null) btnPacientes.setTooltip(new Tooltip("Lista de Pacientes"));
-        if (btnAgendamentos != null) btnAgendamentos.setTooltip(new Tooltip("Agendamentos"));
-
+        if (btnAgendamentos != null) {
+            btnAgendamentos.setTooltip(new Tooltip("Visualizar Calendário"));
+            // Vincula o clique do botão para abrir o calendário, não o formulário de cadastro
+            btnAgendamentos.setOnAction(this::handleAbrirCalendario);
+        }
         DataChangeManager.getInstance().addDataChangeListener(this);
     }
 
@@ -149,6 +150,18 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
                 "Fluxo de Caixa",
                 (Callback<Class<?>, Object>) controller -> new TelaListagemMovimentacoesController(
                         ServiceFactory.getInstance().getMovimentacaoFinanceiraService()
+                )
+        );
+    }
+
+    @FXML
+    private void handleAbrirCalendario(ActionEvent event) {
+        abrirModal(
+                "/view/TelaCalendarioMensal.fxml",
+                "Calendário de Agendamentos",
+                (Callback<Class<?>, Object>) controller -> new TelaCalendarioMensalController(
+                        ServiceFactory.getInstance().getAtendimentoService(),
+                        ServiceFactory.getInstance().getAtividadeService()
                 )
         );
     }
@@ -539,3 +552,4 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         }
     }
 }
+

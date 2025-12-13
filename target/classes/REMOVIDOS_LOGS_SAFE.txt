@@ -1,0 +1,2 @@
+Todos os arquivos de log/auditoria foram removidos com segurança, sem impacto no restante do sistema.
+

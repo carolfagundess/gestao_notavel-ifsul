@@ -1,0 +1,8 @@
+Remover os seguintes arquivos do projeto:
+- src/main/resources/view/TelaVisualizarLogs.fxml
+Esses arquivos não possuem dependências e podem ser removidos com segurança.
+- src/main/java/br/com/gestaonotavel/ifsul/controller/TelaVisualizarLogsController.java
+- src/main/java/br/com/gestaonotavel/ifsul/service/AuditoriaLogService.java
+- src/main/java/br/com/gestaonotavel/ifsul/dao/AuditoriaLogDAO.java
+- src/main/java/br/com/gestaonotavel/ifsul/model/AuditoriaLog.java
+

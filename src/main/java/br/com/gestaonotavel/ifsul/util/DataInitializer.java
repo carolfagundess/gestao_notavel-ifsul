@@ -5,7 +5,7 @@ import br.com.gestaonotavel.ifsul.service.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List; // Import necessário para listas
+import java.util.List;
 
 public class DataInitializer {
 
@@ -14,7 +14,6 @@ public class DataInitializer {
         System.out.println("🚀 INICIANDO POPULAÇÃO DO BANCO DE DADOS");
         System.out.println("========================================");
 
-        // --- Serviços ---
         UsuarioService usuarioService = new UsuarioService();
         ResponsavelService responsavelService = new ResponsavelService();
         PacienteService pacienteService = new PacienteService();
@@ -22,12 +21,8 @@ public class DataInitializer {
         AtendimentoService atendimentoService = new AtendimentoService();
 
         try {
-            // ========================================
-            // 1. CRIAR USUÁRIOS (Correção: Usando Role Enum)
-            // ========================================
             System.out.println("\n📝 Criando usuários...");
 
-            // Admin - CPF Válido para teste: 00637798041
             String cpfAdmin = "00637798041";
             if (usuarioService.buscarPorCpf(cpfAdmin) == null) {
                 Usuario admin = new Usuario();
@@ -35,29 +30,25 @@ public class DataInitializer {
                 admin.setCpf(cpfAdmin);
                 admin.setEmail("admin@gestaonotavel.com");
                 admin.setSenha("admin");
-                admin.setRole(Role.ADMIN); // <-- CORREÇÃO AQUI (Era setCargo)
+                admin.setRole(Role.ADMIN);
                 admin.setTelefone("51999999999");
                 usuarioService.salvarUsuario(admin);
                 System.out.println("✅ Usuário Admin criado - Login: " + cpfAdmin + " / Senha: admin");
             }
 
-            // Coordenadora - CPF Válido para teste: 44063018060
             String cpfMaria = "44063018060";
             if (usuarioService.buscarPorCpf(cpfMaria) == null) {
                 Usuario coordenador = new Usuario();
                 coordenador.setNome("Maria Silva");
                 coordenador.setCpf(cpfMaria);
                 coordenador.setEmail("maria@gestaonotavel.com");
-                coordenador.setSenha("senha123");
-                coordenador.setRole(Role.SECRETARIO); // <-- CORREÇÃO AQUI (Era setCargo)
+                coordenador.setSenha("secretario");
+                coordenador.setRole(Role.SECRETARIO);
                 coordenador.setTelefone("51988887777");
                 usuarioService.salvarUsuario(coordenador);
                 System.out.println("✅ Usuário Coordenador criado");
             }
 
-            // ========================================
-            // 2. CRIAR RESPONSÁVEIS
-            // ========================================
             System.out.println("\n👤 Criando responsáveis...");
 
             Responsavel anaGravado = null;
@@ -69,7 +60,7 @@ public class DataInitializer {
             if (listaResp.isEmpty()) {
                 Responsavel ana = new Responsavel();
                 ana.setNome("Ana Maria Silva");
-                ana.setCpf("36205569021");
+                ana.setCpf("70838879007");
                 ana.setTelefone("51999887766");
                 ana.setDataNascimento(LocalDate.of(1984, 12, 5));
                 anaGravado = responsavelService.salvar(ana);
@@ -77,7 +68,7 @@ public class DataInitializer {
 
                 Responsavel joao = new Responsavel();
                 joao.setNome("João Pedro Santos");
-                joao.setCpf("63376760059");
+                joao.setCpf("51846873030");
                 joao.setTelefone("51988776655");
                 joao.setDataNascimento(LocalDate.of(1990, 3, 15));
                 joaoGravado = responsavelService.salvar(joao);
@@ -85,7 +76,7 @@ public class DataInitializer {
 
                 Responsavel carla = new Responsavel();
                 carla.setNome("Carla Fernandes");
-                carla.setCpf("02643869027");
+                carla.setCpf("84616222005");
                 carla.setTelefone("51977665544");
                 carla.setDataNascimento(LocalDate.of(1988, 7, 20));
                 carlaGravado = responsavelService.salvar(carla);
@@ -95,17 +86,14 @@ public class DataInitializer {
                 if(listaResp.size() > 1) joaoGravado = listaResp.get(1);
                 if(listaResp.size() > 2) carlaGravado = listaResp.get(2);
                 System.out.println("ℹ️ Responsáveis já existentes.");
-            } // Dados para popular banco.
+            }
 
-            // ========================================
-            // 3. CRIAR PACIENTES
-            // ========================================
             System.out.println("\n👶 Criando pacientes...");
 
             if (pacienteService.listarTodos().isEmpty() && anaGravado != null) {
                 Paciente carlos = new Paciente();
                 carlos.setNome("Carlos Souza");
-                carlos.setCpf("92036444068"); // CPF Válido
+                carlos.setCpf("92036444068");
                 carlos.setDataNascimento(LocalDate.of(2018, 6, 15));
                 carlos.setDiagnostico("Atraso de fala");
                 carlos.setCondicaoClinica("Leve");
@@ -122,15 +110,10 @@ public class DataInitializer {
                 julia.setEscolaridade("Pré-escola");
                 if(joaoGravado != null) pacienteService.criarEAssociarResponsavel(joaoGravado, julia);
                 System.out.println("✅ Paciente Julia criado");
-
-                    // Dados para popular banco.
             } else {
                 System.out.println("ℹ️ Pacientes já existentes.");
             }
 
-            // ========================================
-            // 4. CRIAR ESPECIALISTAS
-            // ========================================
             System.out.println("\n👨‍⚕️ Criando especialistas...");
 
             Especialista fonoGravado = null;
@@ -146,16 +129,11 @@ public class DataInitializer {
                 fono.setRegistroProfissional("CRFa-12345");
                 fonoGravado = especialistaService.salvar(fono);
                 System.out.println("✅ Especialista Fonoaudióloga criado");
-
-                // Dados para popular banco.
             } else {
                 System.out.println("ℹ️ Especialistas já existentes.");
                 fonoGravado = especialistaService.listarTodos().get(0);
             }
 
-            // ========================================
-            // 5. CRIAR ATENDIMENTOS
-            // ========================================
             if (atendimentoService.listarTodos(null).isEmpty() && fonoGravado != null && !pacienteService.listarTodos().isEmpty()) {
                 try {
                     Atendimento atend1 = new Atendimento();

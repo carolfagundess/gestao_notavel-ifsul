@@ -43,6 +43,9 @@ public class Paciente implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "responsavel_id"))
     private List<Responsavel> responsaveisLista = new ArrayList<>();
 
+    @OneToMany(mappedBy = "paciente", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Atendimento> atendimentos = new ArrayList<>();
+
     public Paciente() {
     }
 

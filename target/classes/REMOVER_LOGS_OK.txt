@@ -1,0 +1,8 @@
+Arquivos de log/auditoria removidos:
+Nenhum erro encontrado após a remoção.
+- src/main/resources/view/TelaVisualizarLogs.fxml
+- src/main/java/br/com/gestaonotavel/ifsul/controller/TelaVisualizarLogsController.java
+- src/main/java/br/com/gestaonotavel/ifsul/service/AuditoriaLogService.java
+- src/main/java/br/com/gestaonotavel/ifsul/dao/AuditoriaLogDAO.java
+- src/main/java/br/com/gestaonotavel/ifsul/model/AuditoriaLog.java
+

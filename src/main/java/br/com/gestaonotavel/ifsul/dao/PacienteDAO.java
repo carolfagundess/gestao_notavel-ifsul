@@ -1,6 +1,7 @@
 package br.com.gestaonotavel.ifsul.dao;
 
 import br.com.gestaonotavel.ifsul.model.Paciente;
+import br.com.gestaonotavel.ifsul.model.Responsavel;
 import br.com.gestaonotavel.ifsul.util.JpaUtil;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -58,6 +59,26 @@ public class PacienteDAO {
                     .setParameter("cpf", cpfBuscado).getSingleResult();
         } catch (NoResultException e) {
             return null;
+        } finally {
+            em.close();
+        }
+    }
+
+    // Salva paciente e responsavel juntos em uma transação para garantir sessão ativa
+    public void salvarPacienteEAssociarResponsavel(Paciente paciente, Responsavel responsavel) {
+        EntityManager em = JpaUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        try {
+            Paciente pacienteGerenciado = em.merge(paciente);
+            Responsavel responsavelGerenciado = em.merge(responsavel);
+            pacienteGerenciado.adicionarResponsavel(responsavelGerenciado);
+            em.merge(pacienteGerenciado);
+            em.merge(responsavelGerenciado);
+            tx.commit();
+        } catch (PersistenceException ex) {
+            tx.rollback();
+            throw ex;
         } finally {
             em.close();
         }

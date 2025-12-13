@@ -44,8 +44,8 @@ public class PacienteService {
     }
 
     public void criarEAssociarResponsavel(Responsavel responsavel, Paciente paciente) {
-        paciente.adicionarResponsavel(responsavel);
-        salvarPaciente(paciente);
+        // Associa ambos em uma transação única para evitar LazyInitializationException
+        pacienteDAO.salvarPacienteEAssociarResponsavel(paciente, responsavel);
     }
 
     public List<Paciente> listarTodos() { return pacienteDAO.listarTodos(); }

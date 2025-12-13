@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.com.gestaonotavel.ifsul.controller.TelaRelatorioFinanceiroController">
+    <top>
+        <VBox style="-fx-background-color: #00897B; -fx-padding: 15;">
+            <Label text="Relatório Consolidado Financeiro" style="-fx-text-fill: white; -fx-font-size: 20; -fx-font-weight: bold;"/>
+        </VBox>
+    </top>
+    <center>
+        <TableView fx:id="tabelaResumo" style="-fx-padding: 10;">
+            <columns>
+                <TableColumn fx:id="colunaCategoria" prefWidth="400.0" text="Categoria / Profissional / Atividade" />
+                <TableColumn fx:id="colunaValor" prefWidth="150.0" text="Saldo Total (R$)" style="-fx-alignment: CENTER_RIGHT;"/>
+            </columns>
+        </TableView>
+    </center>
+</BorderPane>
