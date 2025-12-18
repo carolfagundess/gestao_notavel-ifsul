@@ -30,11 +30,11 @@
                 <!-- MENU LATERAL ESQUERDO -->
                 <VBox prefHeight="752.0" prefWidth="91.0" spacing="10.0" style="-fx-background-color: #ECEFF1; -fx-padding: 15; -fx-border-color: #BDBDBD; -fx-border-width: 0 1 0 0;">
                     <children>
-                        <Button minHeight="60.0" minWidth="60.0" style="-fx-font-size: 24;" text="☰" />
-                        <Button minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20; -fx-text-fill: #4CAF50;" text="👤" />
-                        <Button minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20;" text="👤📅" />
-                        <Button minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20;" text="👤📅💰" />
-                        <Button minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20;" text="👤📅💰📋" />
+                        <Button onAction="#handleMenu" minHeight="60.0" minWidth="60.0" style="-fx-font-size: 24;" text="☰" />
+                        <Button onAction="#handlePacientes" minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20; -fx-text-fill: #4CAF50;" text="👤" />
+                        <Button onAction="#handleAgendamentos" minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20;" text="📅" />
+                        <Button onAction="#handleFinanceiro" minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20;" text="💰" />
+                        <Button onAction="#handleRelatorios" minHeight="60.0" minWidth="60.0" style="-fx-font-size: 20;" text="📋" />
                     </children>
                 </VBox>
 

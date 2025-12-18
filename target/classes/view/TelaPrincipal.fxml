@@ -23,10 +23,10 @@
 
                         <HBox alignment="CENTER_RIGHT" spacing="15.0">
                             <children>
-                                <Button fx:id="btnNovoEspecialista" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;"
+                                <Button fx:id="btnNovoEspecialista" onAction="#handleNovoEspecialista" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;"
                                         text="Novo Especialista"/>
 
-                                <Button fx:id="btnRelatorios" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;"
+                                <Button fx:id="btnRelatorios" onAction="#handleAbrirRelatorioVoluntarios" style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; -fx-font-size: 12; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;"
                                         text="Relatórios Gerais"/>
 
                                 <Button fx:id="btnSair" onAction="#handleSairButtonAction"
@@ -70,7 +70,7 @@
                 <VBox prefWidth="91.0" spacing="10.0"
                       style="-fx-background-color: #ECEFF1; -fx-padding: 15; -fx-border-color: #BDBDBD; -fx-border-width: 0 1 0 0;">
                     <children>
-                        <Button fx:id="btnMenu" minHeight="60.0" minWidth="60.0"
+                        <Button fx:id="btnMenu" onAction="#handleMenu" minHeight="60.0" minWidth="60.0"
                                 style="-fx-font-size: 16; -fx-font-weight: bold;" text="☰"/>
 
 

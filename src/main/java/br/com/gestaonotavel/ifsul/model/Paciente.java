@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "paciente")
+@Table(name = "paciente", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"cpf"}, name = "UK_paciente_cpf")
+})
 public class Paciente implements Serializable {
 
     @Id
@@ -62,12 +64,19 @@ public class Paciente implements Serializable {
     @PrePersist
     @PreUpdate
     public void criptografarDados() {
-        this.cpf = EncryptionUtil.encrypt(this.cpf);
+        if (this.cpf != null && !this.cpf.isEmpty()) {
+            // Evita re-criptografar um valor que já foi criptografado
+            if (!EncryptionUtil.isEncrypted(this.cpf)) {
+                this.cpf = EncryptionUtil.encrypt(this.cpf);
+            }
+        }
     }
 
     @PostLoad
     public void descriptografarDados() {
-        this.cpf = EncryptionUtil.decrypt(this.cpf);
+        if (this.cpf != null && !this.cpf.isEmpty()) {
+            this.cpf = EncryptionUtil.decrypt(this.cpf);
+        }
     }
     // --------------------
 

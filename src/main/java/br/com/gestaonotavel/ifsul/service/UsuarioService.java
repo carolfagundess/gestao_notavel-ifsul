@@ -57,36 +57,43 @@ public class UsuarioService {
         }
 
         // 1. Validar formato e dígitos do CPF
-        // --- COMENTADO TEMPORARIAMENTE PARA PERMITIR A INICIALIZAÇÃO ---
-        /*
         if (!ValidationUtil.validarCPF(cpfOriginal)) {
             throw new RegraDeNegocioException("CPF inválido.");
         }
-        */
-        // ----------------------------------------------------------------
 
         // 2. Limpar CPF APÓS validação (para salvar somente números no banco)
         String cpfLimpo = cpfOriginal.replaceAll("[^0-9]", "");
 
         // 3. Verificar duplicidade de CPF (usando CPF limpo)
-        if (usuarioDAO.buscarPorCpf(cpfLimpo) != null) {
-            throw new RegraDeNegocioException("Usuário com este CPF já cadastrado no sistema");
+        Usuario usuarioExistenteCpf = usuarioDAO.buscarPorCpf(cpfLimpo);
+        if (usuarioExistenteCpf != null) {
+            // Verifica se é um novo cadastro ou se o CPF pertence a OUTRO usuário
+            if (usuarioSalvando.getId() == null || !usuarioSalvando.getId().equals(usuarioExistenteCpf.getId())) {
+                throw new RegraDeNegocioException("Usuário com este CPF já cadastrado no sistema");
+            }
         }
         // --- Fim Validação CPF ---
 
         // 4. Verificar duplicidade de Email
         String email = usuarioSalvando.getEmail().trim();
-        if (usuarioDAO.buscarPorEmail(email) != null) {
-            throw new RegraDeNegocioException("Usuário com este Email já cadastrado no sistema");
+        Usuario usuarioExistenteEmail = usuarioDAO.buscarPorEmail(email);
+        if (usuarioExistenteEmail != null) {
+            if (usuarioSalvando.getId() == null || !usuarioSalvando.getId().equals(usuarioExistenteEmail.getId())) {
+                throw new RegraDeNegocioException("Usuário com este Email já cadastrado no sistema");
+            }
         }
 
         // Atualiza o objeto com email e CPF limpo
         usuarioSalvando.setEmail(email);
         usuarioSalvando.setCpf(cpfLimpo);
 
-        // 5. Criptografar Senha
-        String hashSenha = BCrypt.hashpw(usuarioSalvando.getSenha(), BCrypt.gensalt());
-        usuarioSalvando.setSenha(hashSenha);
+        // 5. Criptografar Senha (apenas se não estiver criptografada)
+        String senhaAtual = usuarioSalvando.getSenha();
+        boolean isHash = senhaAtual.length() == 60 && (senhaAtual.startsWith("$2a$") || senhaAtual.startsWith("$2b$") || senhaAtual.startsWith("$2y$"));
+        if (!isHash) {
+            String hashSenha = BCrypt.hashpw(senhaAtual, BCrypt.gensalt());
+            usuarioSalvando.setSenha(hashSenha);
+        }
 
         // 6. Salvar Usuário
         return usuarioDAO.salvarUsuario(usuarioSalvando);

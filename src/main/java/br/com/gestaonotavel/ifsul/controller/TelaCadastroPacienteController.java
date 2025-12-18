@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TelaCadastroPacienteController implements Initializable {
+public class TelaCadastroPacienteController extends BaseController implements Initializable {
 
     @FXML private TextField txtNomePaciente;
     @FXML private TextField txtCpf;

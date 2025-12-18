@@ -2,6 +2,8 @@ package br.com.gestaonotavel.ifsul.util;
 
 import br.com.gestaonotavel.ifsul.model.*;
 import br.com.gestaonotavel.ifsul.service.*;
+import br.com.gestaonotavel.ifsul.service.factory.ServiceFactory;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,39 +16,48 @@ public class DataInitializer {
         System.out.println("🚀 INICIANDO POPULAÇÃO DO BANCO DE DADOS");
         System.out.println("========================================");
 
-        UsuarioService usuarioService = new UsuarioService();
-        ResponsavelService responsavelService = new ResponsavelService();
-        PacienteService pacienteService = new PacienteService();
-        EspecialistaService especialistaService = new EspecialistaService();
-        AtendimentoService atendimentoService = new AtendimentoService();
+        // Correção: Utilizando o ServiceFactory para obter instâncias dos serviços
+        UsuarioService usuarioService = ServiceFactory.getInstance().getUsuarioService();
+        ResponsavelService responsavelService = ServiceFactory.getInstance().getResponsavelService();
+        PacienteService pacienteService = ServiceFactory.getInstance().getPacienteService();
+        EspecialistaService especialistaService = ServiceFactory.getInstance().getEspecialistaService();
+        AtendimentoService atendimentoService = ServiceFactory.getInstance().getAtendimentoService();
 
         try {
             System.out.println("\n📝 Criando usuários...");
 
             String cpfAdmin = "00637798041";
-            if (usuarioService.buscarPorCpf(cpfAdmin) == null) {
-                Usuario admin = new Usuario();
-                admin.setNome("Administrador");
-                admin.setCpf(cpfAdmin);
-                admin.setEmail("admin@gestaonotavel.com");
-                admin.setSenha("admin");
-                admin.setRole(Role.ADMIN);
-                admin.setTelefone("51999999999");
-                usuarioService.salvarUsuario(admin);
-                System.out.println("✅ Usuário Admin criado - Login: " + cpfAdmin + " / Senha: admin");
+            try {
+                if (usuarioService.buscarPorCpf(cpfAdmin) == null) {
+                    Usuario admin = new Usuario();
+                    admin.setNome("Administrador");
+                    admin.setCpf(cpfAdmin);
+                    admin.setEmail("admin@gestaonotavel.com");
+                    admin.setSenha(BCrypt.hashpw("admin", BCrypt.gensalt()));
+                    admin.setRole(Role.ADMIN);
+                    admin.setTelefone("51999999999");
+                    usuarioService.salvarUsuario(admin);
+                    System.out.println("✅ Usuário Admin criado - Login: " + cpfAdmin + " / Senha: admin");
+                }
+            } catch (Exception e) {
+                System.err.println("⚠️ Não foi possível criar o Admin (provável email duplicado ou erro de validação): " + e.getMessage());
             }
 
             String cpfMaria = "44063018060";
-            if (usuarioService.buscarPorCpf(cpfMaria) == null) {
-                Usuario coordenador = new Usuario();
-                coordenador.setNome("Maria Silva");
-                coordenador.setCpf(cpfMaria);
-                coordenador.setEmail("maria@gestaonotavel.com");
-                coordenador.setSenha("secretario");
-                coordenador.setRole(Role.SECRETARIO);
-                coordenador.setTelefone("51988887777");
-                usuarioService.salvarUsuario(coordenador);
-                System.out.println("✅ Usuário Coordenador criado");
+            try {
+                if (usuarioService.buscarPorCpf(cpfMaria) == null) {
+                    Usuario coordenador = new Usuario();
+                    coordenador.setNome("Maria Silva");
+                    coordenador.setCpf(cpfMaria);
+                    coordenador.setEmail("maria@gestaonotavel.com");
+                    coordenador.setSenha(BCrypt.hashpw("secretario", BCrypt.gensalt()));
+                    coordenador.setRole(Role.SECRETARIO);
+                    coordenador.setTelefone("51988887777");
+                    usuarioService.salvarUsuario(coordenador);
+                    System.out.println("✅ Usuário Coordenador criado");
+                }
+            } catch (Exception e) {
+                System.err.println("⚠️ Não foi possível criar o Coordenador: " + e.getMessage());
             }
 
             System.out.println("\n👤 Criando responsáveis...");
@@ -82,15 +93,22 @@ public class DataInitializer {
                 carlaGravado = responsavelService.salvar(carla);
                 System.out.println("✅ Responsável Carla criado");
             } else {
-                anaGravado = listaResp.get(0);
-                if(listaResp.size() > 1) joaoGravado = listaResp.get(1);
-                if(listaResp.size() > 2) carlaGravado = listaResp.get(2);
+                if (listaResp.size() > 0) {
+                    anaGravado = listaResp.get(0);
+                }
+                if(listaResp.size() > 1) {
+                    joaoGravado = listaResp.get(1);
+                }
+                if(listaResp.size() > 2) {
+                    carlaGravado = listaResp.get(2);
+                }
                 System.out.println("ℹ️ Responsáveis já existentes.");
             }
 
             System.out.println("\n👶 Criando pacientes...");
 
-            if (pacienteService.listarTodos().isEmpty() && anaGravado != null) {
+            List<Paciente> pacientes = pacienteService.listarTodos();
+            if (pacientes.isEmpty() && anaGravado != null) {
                 Paciente carlos = new Paciente();
                 carlos.setNome("Carlos Souza");
                 carlos.setCpf("92036444068");
@@ -142,6 +160,7 @@ public class DataInitializer {
                     atend1.setDataHora(LocalDateTime.now().withHour(14).withMinute(0));
                     atend1.setLocal("Sala 101");
                     atend1.setObservacao("Sessão Inicial");
+                    atend1.setStatusAtendimento(StatusAtendimento.AGENDADO);
                     atendimentoService.salvar(atend1);
                     System.out.println("✅ Atendimento criado");
                 } catch (Exception e) {

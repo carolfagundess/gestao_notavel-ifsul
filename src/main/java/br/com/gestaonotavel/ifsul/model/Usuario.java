@@ -78,6 +78,8 @@ public class Usuario implements Serializable {
         if (obj == null) return false;
         if (getClass() != obj.getClass()) return false;
         final Usuario other = (Usuario) obj;
+        // Se ambos IDs forem nulos, os objetos não são iguais (são novas instâncias distintas)
+        if (this.id == null && other.id == null) return false;
         return Objects.equals(this.id, other.id);
     }
 }

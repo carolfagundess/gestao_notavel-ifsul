@@ -144,6 +144,11 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
     // ==================== AÇÕES DOS BOTÕES ====================
 
     @FXML
+    private void handleMenu(ActionEvent event) {
+        // Lógica para o botão de menu
+    }
+
+    @FXML
     private void handleAbrirFinanceiro(ActionEvent event) {
         abrirModal(
                 "/view/TelaListagemMovimentacoes.fxml",
@@ -161,7 +166,9 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
                 "Calendário de Agendamentos",
                 (Callback<Class<?>, Object>) controller -> new TelaCalendarioMensalController(
                         ServiceFactory.getInstance().getAtendimentoService(),
-                        ServiceFactory.getInstance().getAtividadeService()
+                        ServiceFactory.getInstance().getAtividadeService(),
+                        pacienteService,
+                        ServiceFactory.getInstance().getEspecialistaService()
                 )
         );
     }
@@ -552,4 +559,3 @@ public class TelaPrincipalController implements Initializable, DataChangeListene
         }
     }
 }
-

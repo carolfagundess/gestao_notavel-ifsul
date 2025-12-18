@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TelaCadastroResponsavelController implements Initializable {
+public class TelaCadastroResponsavelController extends BaseController implements Initializable {
 
     @FXML private TextField txtNome;
     @FXML private TextField txtCpf;
